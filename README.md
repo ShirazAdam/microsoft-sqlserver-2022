@@ -24,6 +24,6 @@ you can get them from an old sql server installation from the GAC folder.
 For convenience for the public i  uploaded  a zip file with all the folders to just drop it there.
 zip file: OldServerControlsFolders.zip
 
-SQL Server 2022 express (I believe it work the same for Dev/Ent) on WINDOWS container build 16.0.4105.2 (!)
+SQL Server 2022 express (I believe it will work the same for Dev/Ent) on WINDOWS container build 16.0.4105.2 (!)
 <br/>
 Cheers.
