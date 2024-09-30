@@ -68,11 +68,11 @@ RUN powershell -command ( \
     $url = 'https://download.microsoft.com/download/9/6/8/96819b0c-c8fb-4b44-91b5-c97015bbda9f/SQLServer2022-KB5041321-x64.exe' \
     $path = '\SQLSetupMedia\CU\CU15\SQLServer2022-KB5041321-x64.exe' \    
     if (-not(Test-Path -path $path)) { \
-        Write-Host 'File does not exist. Now downloading CU15.' \
+        Write-Host 'File does not exist. Now downloading CU$($CU).' \
         Invoke-WebRequest -Uri $url -OutFile $path \
     } \
     else { \
-        Write-Host 'File exists. There''s no need to download CU15 again.' \
+        Write-Host 'File exists. There''s no need to download CU$($CU) again.' \
     }
 
 #Step 3.2: Copy CU  XXXX installation .EXE file from the host to the container image to another folder
