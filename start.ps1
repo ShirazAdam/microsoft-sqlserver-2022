@@ -34,7 +34,7 @@ else
 
 # start the service
 Write-Host "Starting SQL Server"
-$SqlServiceName = 'MSSQLSERVER'; 
+$SqlServiceName = 'MSSQLSERVER';
 start-service $SqlServiceName
 
 if($sa_password -eq "_") {
