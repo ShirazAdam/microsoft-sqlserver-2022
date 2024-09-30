@@ -22,7 +22,7 @@
 # docker build `
 # --build-arg VERSION=16.0.1000.6 --build-arg TYPE=exp `
 # -f Dockerfile.prep.txt ` (or without this line for fileName regular Dockerfile...)
-# -t vanilla-sqlserver2022-exp-prep-based:2022-win-CU11-FINAL-1.0 .
+# -t mssqlserver2022-dev-sysprep:2022-win-CU15-v1.0.
 
 
 
