@@ -200,12 +200,12 @@ RUN  $SqlServiceName = 'MSSQLSERVER'; \
     # Set-itemproperty -path ('HKLM:\software\microsoft\microsoft sql server\' + $id + '\mssqlserver') -name DefaultLog -value $databaseFolder; 
 
 #Step 6: Set and create working directory for script execution
-RUN echo 'Step 6: Set and create working directory for script execution at c:\scripts'
-WORKDIR C:\scripts
+RUN echo 'Step 6: Set and create working directory for script execution at C:\Temp_Scripts'
+WORKDIR C:\Temp_Scripts
 
 #Step 7: Copy Start.ps1 to image on scripts directory
 RUN echo 'Step 7: Copy Start.ps1 to image on scripts directory'
-COPY start.ps1 C:\scripts
+COPY start.ps1 C:\Temp_Scripts
 
 #Step 8: Run PowerShell script Start.ps1, passing inside the script  the -ACCEPT_EULA parameter with a value of Y
 # and $sa_password to create/change sa password
