@@ -13,7 +13,7 @@
 # 3. Due to strange bug that the servercore 2022 image don't have old server controls (used to be at 1809) you must 
 #     have The Missing Server control files/folders - which is a bunch of folders which include old control dll's under 'Missing' folder.
 #     as explaind in here:  https://github.com/microsoft/mssql-docker/issues/540.
-#    So 4 folders needs to be in the folder '\SQLSetupMedia/CU/CU15/Missing/' to fix this strange bug i mentioned there.
+#    So 4 folders needs to be in the folder '\SQLSetupMedia\CU\CU15\Missing\' to fix this strange bug i mentioned there.
 # you can get them from an old sql server installation from the GAC folder.
 # For convenience for the public i  uploaded  a zip file with all the folders to just drop it there.
 # zip file: OldServerControlsFolders.zip
@@ -47,8 +47,8 @@ ENV attach_dbs="[]"
 ENV accept_eula="_"
 ENV sa_password_path="C:\ProgramData\Docker\secrets\sa-password"
 
-#Step 2: Create temporary directory to hold SQL Server XXXX installation files + CU
-RUN echo "Step 2: Create temporary directory to hold SQL Server XXXX installation files + CU"
+#Step 2: Create temporary directory to hold SQL Server installation files + CU
+RUN echo "Step 2: Create temporary directory to hold SQL Server installation files + CU"
 RUN powershell -Command (mkdir C:\Temp_SQLDev_Setup)
 RUN powershell -Command (mkdir C:\Temp_CU_Setup)
 
