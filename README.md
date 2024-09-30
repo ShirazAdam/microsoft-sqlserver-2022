@@ -19,6 +19,10 @@ SQL Server 2022 Developer for Windows container build 16.0.4145.4. This should a
 
 Added missing files and folders PowerShell script from https://gist.github.com/jermicus/a117c6727894407161ba9ac72fd02bce
 
+Use 'Package-SQL-CU-tar.ps1' to create a tar with the missing files and folders when slipstreaming an update
+Use 'start.ps1' for the standard containerisation process
+Use 'bootstrap.ps1' to run both of the above files with 'Package-SQL-CU-tar.ps1' first followed by 'start.ps1'
+
 # Update 02.07.2024:
 This version was updated by me, Isaac Kramer based on the work of Tobias.
 This version update the container to Sql Server 2022 + Comulative Update 11 (CU11) Build version 16.0.4105.2
