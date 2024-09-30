@@ -63,8 +63,20 @@ RUN echo 'Step 2.1 because of error on CU install need to copy ahead missing fil
 RUN echo 'Step 3: Copy SQL Server XXXX installation files from the host to the container image'
 COPY  '\SQLSetupMedia\SQLDEV_x64_ENU\'  C:\Temp_SQLDev_Setup
 
-#Step 3.1: Copy CU  XXXX installation .EXE file from the host to the container image to another folder
-RUN echo 'Step 3.1: Copy CU  XXXX installation .EXE file from the host to the container image'
+#Step 3.1: Download CU15 installation file from the internet
+RUN powershell -command ( \
+    $url = 'https://download.microsoft.com/download/9/6/8/96819b0c-c8fb-4b44-91b5-c97015bbda9f/SQLServer2022-KB5041321-x64.exe' \
+    $path = '\SQLSetupMedia\CU\CU15\SQLServer2022-KB5041321-x64.exe' \    
+    if (-not(Test-Path -path $path)) { \
+        Write-Host 'File does not exist. Now downloading CU15.' \
+        Invoke-WebRequest -Uri $url -OutFile $path \
+    } \
+    else { \
+        Write-Host 'File exists. There''s no need to download CU15 again.' \
+    }
+
+#Step 3.2: Copy CU  XXXX installation .EXE file from the host to the container image to another folder
+RUN echo 'Step 3.2: Copy CU  XXXX installation .EXE file from the host to the container image'
 COPY '\SQLSetupMedia\CU\CU15\SQLServer2022-KB5041321-x64.exe' C:\Temp_CU_Setup
 
 #Step 3.3 check size of setup media directory in container -should be  652431336 (622M)
