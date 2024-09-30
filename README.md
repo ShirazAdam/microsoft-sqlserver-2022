@@ -6,7 +6,7 @@ An **unofficial**, **unsupported** and **in no way connected to Microsoft** cont
 More background and instructions for usage in [this blog post](https://tobiasfenster.io/ms-sql-server-in-windows-containers)
 
 # Update 30/09/2024:
-This version was updated and modified to support Microsoft SQL Server 2022 Developer Edition on Windows.
+This version was updated and modified to support Microsoft SQL Server 2022 Developer Edition (https://download.microsoft.com/download/c/c/9/cc9c6797-383c-4b24-8920-dc057c1de9d3/SQL2022-SSEI-Dev.exe).
 This version will update the container to Cumulative Update 15 (CU15) build version 16.0.4145.4 (https://download.microsoft.com/download/9/6/8/96819b0c-c8fb-4b44-91b5-c97015bbda9f/SQLServer2022-KB5041321-x64.exe)
 
 # Update 02.07.2024:
