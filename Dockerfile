@@ -8,8 +8,8 @@
 #
 # You need 3 set-up folders on the host to be ready for the build as seen in the Dockerfile:
 
-# 1. The main SQL Server 2022 express setup media extracted so that the root SETUP.EXE will be in '\SQLSetupMedia\SQLEXPRDEV_x64_ENU\' folder.
-# 2. The CU update (in this case CU15) EXE file (don't need to be extacted) in '\SQLSetupMedia\CU\CU11\SQLServer2022-KB5041321-x64.exe'
+# 1. The main SQL Server 2022 developer setup media extracted so that the root SETUP.EXE will be in '\SQLSetupMedia\SQLDEV_x64_ENU\' folder.
+# 2. The CU update (in this case CU15) EXE file (don't need to be extacted) in '\SQLSetupMedia\CU\CU15\SQLServer2022-KB5041321-x64.exe'
 # 3. Due to strange bug that the servercore 2022 image don't have old server controls (used to be at 1809) you must 
 #     have The Missing Server control files/folders - which is a bunch of folders which include old control dll's under 'Missing' folder.
 #     as explaind in here:  https://github.com/microsoft/mssql-docker/issues/540.
@@ -35,13 +35,13 @@ LABEL maintainer "Shiraz Adam: https://github.com/ShirazAdam/mssql-dev-v2022"
 
 
 #Step 1.1 define ev and args:
-ARG EXP_EXE="Something"   
+ARG DEV_EXE="Something"   
 ARG CU="" 
 ARG VERSION 
-ARG TYPE="exp"
+ARG TYPE="dev"
 ARG sa_password
 
-ENV EXP_EXE=${EXP_EXE} 
+ENV DEV_EXE=${DEV_EXE} 
 ENV CU=$CU 
 ENV VERSION=${VERSION}
 ENV sa_password="Vmw0NTY3dmxzaTI1MDAh"
@@ -51,27 +51,27 @@ ENV sa_password_path="C:\ProgramData\Docker\secrets\sa-password"
 
 #Step 2: Create temporary directory to hold SQL Server XXXX installation files + CU
 RUN echo "Step 2: Create temporary directory to hold SQL Server XXXX installation files + CU"
-RUN powershell -Command (mkdir C:\co_SQLExp_Setup)
-RUN powershell -Command (mkdir C:\co_CU_Setup)
+RUN powershell -Command (mkdir C:\Temp_SQLDev_Setup)
+RUN powershell -Command (mkdir C:\Temp_CU_Setup)
 
 #Step 2.1 because of Strange error on CU install : https://github.com/microsoft/mssql-docker/issues/540
 # need to copy ahead missing files to GAC. Missing files (ServerControls) are in self made folder
 # that can be created from old installment of Sql server in real PC and searching there the controls files
 # as explained in the github issue above
 RUN echo 'Step 2.1 because of error on CU install need to copy ahead missing files to GAC'
-COPY '\SQLSetupMedia/CU/CU11/Missing/' C:/Windows/Microsoft.Net/assembly/GAC_MSIL
+#COPY '\SQLSetupMedia\CU\CU15\Missing\' C:\Windows\Microsoft.Net\assembly\GAC_MSIL
 
 #Step 3: Copy SQL Server XXXX installation files from the host to the container image
 RUN echo 'Step 3: Copy SQL Server XXXX installation files from the host to the container image'
-COPY  '\SQLSetupMedia/SQLEXPRADV_x64_ENU/'  C:/co_SQLExp_Setup
+COPY  '\SQLSetupMedia\SQLDEV_x64_ENU\'  C:\Temp_SQLDev_Setup
 
 #Step 3.1: Copy CU  XXXX installation .EXE file from the host to the container image to another folder
 RUN echo 'Step 3.1: Copy CU  XXXX installation .EXE file from the host to the container image'
-COPY '\SQLSetupMedia\CU\CU11\SQLServer2022-KB5032679-x64.exe' C:/co_CU_Setup
+COPY '\SQLSetupMedia\CU\CU15\SQLServer2022-KB5041321-x64.exe' C:\Temp_CU_Setup
 
 #Step 3.3 check size of setup media directory in container -should be  652431336 (622M)
 RUN echo 'Step 3.3 check size of setup media directory in container -should be  652431336 (622M)'
-WORKDIR  C:/co_SQLExp_Setup
+WORKDIR  C:\Temp_SQLDev_Setup
 RUN powershell -Command "(ls -r | measure -sum Length)"
 # RUN powershell -Command "(Get-ChildItem -Recurse | Measure-Object -Sum Length)"
 #back to origin
@@ -95,11 +95,11 @@ RUN $ProgressPreference = 'SilentlyContinue'; \
     # Import-Module "$env:ChocolateyInstall\helpers\chocolateyProfile.psm1" - didn't worked for me here \
     # refreshenv;      - didn't worked for me here
 
-#Step 4: Install SQL Server Express SysPrep (Only Prepare Image with FULL UPDATES) via command line inside powershell
-RUN echo 'Step 4: Install SQL Server Express SysPrep (Only Prepare Image with FULL UPDATES) via command line inside powershell'
-RUN if (-not [string]::IsNullOrEmpty($env:EXP_EXE)) { \
-        .\co_SQLExp_Setup\SETUP.exe /q /ACTION=PrepareImage   \
-        /INSTANCEID=SQLEXPRESS  \
+#Step 4: Install SQL Server Developer SysPrep (Only Prepare Image with FULL UPDATES) via command line inside powershell
+RUN echo 'Step 4: Install SQL Server Developer SysPrep (Only Prepare Image with FULL UPDATES) via command line inside powershell'
+RUN if (-not [string]::IsNullOrEmpty($env:DEV_EXE)) { \
+        .\Temp_SQLDev_Setup\SETUP.exe /q /ACTION=PrepareImage   \
+        /INSTANCEID=MSSQLDEV  \
         /IACCEPTSQLSERVERLICENSETERMS /SUPPRESSPRIVACYSTATEMENTNOTICE /IACCEPTPYTHONLICENSETERMS \
         /IACCEPTROPENLICENSETERMS  \
         /INDICATEPROGRESS \
@@ -107,30 +107,30 @@ RUN if (-not [string]::IsNullOrEmpty($env:EXP_EXE)) { \
         #   /SQLSVCACCOUNT='NT AUTHORITY\NETWORK SERVICE' \
         # /SECURITYMODE=SQL /SAPWD=$sa_password /SQLSVCACCOUNT="NT AUTHORITY\NETWORK SERVICE" \
         # /SQLSYSADMINACCOUNTS='BUILTIN\ADMINISTRATORS'  \
-        #  /UPDATEENABLED=True /UpdateSource='C:\co_CU_Setup\SQLServer2022-KB5032679-x64.exe' \
-         /UPDATEENABLED=True /UpdateSource='C:\co_CU_Setup' \
+        #  /UPDATEENABLED=True /UpdateSource='C:\Temp_CU_Setup\SQLServer2022-KB5041321-x64.exe' \
+         /UPDATEENABLED=True /UpdateSource='C:\Temp_CU_Setup' \
         # /FEATURES=SQLEngine; \
         #  SQL= Installs the SQL Server Database Engine, Replication, Fulltext, and Data Quality Server.
         #  SQLEngine= Installs Only the SQL Server Database Engine.
         /FEATURES=SQL; \
         #test without delete - remove if nessacery: \
-        # remove-item -recurse -force c:\co_SQLExp_Setup -ErrorAction SilentlyContinue; \
+        # remove-item -recurse -force c:\Temp_SQLDev_Setup -ErrorAction SilentlyContinue; \
     }
         # Few tests here:
         # or:
         # /FEATURES=SQL,AS,IS \
         # /AGTSVCACCOUNT="NT AUTHORITY\System"  
     
-#Step 4.5 Install SQL Server Express 'Complete Image' AFTER SysPrep Stage above via command line inside powershell
-RUN echo 'Step 4.5 Install SQL Server Express 'Complete Image' AFTER SysPrep Stage via command line inside powershell'
+#Step 4.5 Install SQL Server Developer 'Complete Image' AFTER SysPrep Stage above via command line inside powershell
+RUN echo 'Step 4.5 Install SQL Server Developer 'Complete Image' AFTER SysPrep Stage via command line inside powershell'
 RUN mkdir 'C:\databases';
 
-RUN if (-not [string]::IsNullOrEmpty($env:EXP_EXE)) { \
-        .\co_SQLExp_Setup\SETUP.exe /q /ACTION=CompleteImage /INSTANCEID=SQLEXPRESS \
+RUN if (-not [string]::IsNullOrEmpty($env:DEV_EXE)) { \
+        .\Temp_SQLDev_Setup\SETUP.exe /q /ACTION=CompleteImage /INSTANCEID=MSSQLDEV \
         /IACCEPTSQLSERVERLICENSETERMS /SUPPRESSPRIVACYSTATEMENTNOTICE /IACCEPTPYTHONLICENSETERMS \
         /IACCEPTROPENLICENSETERMS  \
         /INDICATEPROGRESS \
-        /INSTANCENAME=SQLEXPRESS  /INSTANCEID=SQLEXPRESS \
+        /INSTANCENAME=MSSQLDEV  /INSTANCEID=MSSQLDEV \
         # /SECURITYMODE=SQL /SQLSVCACCOUNT="NT AUTHORITY\NETWORK SERVICE" \
         # The password here we are inserting is NOT IMPORTANT because we change it at docker run (container) \
         # so you can enter here anything but must be SOMETHING, otherwise it won't work. \
@@ -144,8 +144,8 @@ RUN if (-not [string]::IsNullOrEmpty($env:EXP_EXE)) { \
         /SQLUSERDBDIR='C:\databases' /SQLUSERDBLOGDIR='C:\databases'; \ 
         #test without delete - remove if nessacery:
         #clean up install media file to reduce container size
-        remove-item -recurse -force c:\co_SQLExp_Setup -ErrorAction SilentlyContinue; \
-        remove-item -recurse -force c:\co_CU_Setup -ErrorAction SilentlyContinue; \
+        remove-item -recurse -force c:\Temp_SQLDev_Setup -ErrorAction SilentlyContinue; \
+        remove-item -recurse -force c:\Temp_CU_Setup -ErrorAction SilentlyContinue; \
     }
         # or:
         # /FEATURES=SQL,AS,IS \
@@ -157,7 +157,7 @@ RUN if (-not [string]::IsNullOrEmpty($env:EXP_EXE)) { \
 #     } `
 #Step 5 - Finished  Basic setup, now configure SERVICES and Registry Values
 RUN echo 'Step 5: Finished  Basic setup, now configure SERVICES and Registry Values'
-RUN  $SqlServiceName = 'MSSQL$SQLEXPRESS'; \
+RUN  $SqlServiceName = 'MSSQLSERVER'; \
     While (!(get-service $SqlServiceName -ErrorAction SilentlyContinue)) { Start-Sleep -Seconds 5 } ; \
     Stop-Service $SqlServiceName ; \
     $databaseFolder = 'c:\databases'; \
@@ -172,16 +172,16 @@ RUN  $SqlServiceName = 'MSSQL$SQLEXPRESS'; \
     Set-Service $SqlBrowserServiceName -startuptype manual ; \
     Stop-Service $SqlBrowserServiceName; \
     $SqlTelemetryName = 'SQLTELEMETRY'; \
-    if ($env:TYPE -eq 'exp') { \
-        $SqlTelemetryName = 'SQLTELEMETRY$SQLEXPRESS'; \
-    } \
+    # if ($env:TYPE -eq 'exp') { \
+    #     $SqlTelemetryName = 'SQLTELEMETRY$SQLEXPRESS'; \
+    # } \
     Set-Service $SqlTelemetryName -startuptype manual ; \
     Stop-Service $SqlTelemetryName; \
     $version = [System.Version]::Parse($env:VERSION); \
     $id = ('mssql' + $version.Major + '.MSSQLSERVER'); \
-    if ($env:TYPE -eq 'exp') { \
-        $id = ('mssql' + $version.Major + '.SQLEXPRESS'); \
-    } \
+    # if ($env:TYPE -eq 'exp') { \
+    #     $id = ('mssql' + $version.Major + '.SQLEXPRESS'); \
+    # } \
     Set-itemproperty -path ('HKLM:\software\microsoft\microsoft sql server\' + $id + '\mssqlserver\supersocketnetlib\tcp\ipall') -name tcpdynamicports -value '' ; \
     Set-itemproperty -path ('HKLM:\software\microsoft\microsoft sql server\' + $id + '\mssqlserver\supersocketnetlib\tcp\ipall') -name tcpdynamicports -value '' ; \
     Set-itemproperty -path ('HKLM:\software\microsoft\microsoft sql server\' + $id + '\mssqlserver\supersocketnetlib\tcp\ipall') -name tcpport -value 1433 ; \
@@ -190,59 +190,19 @@ RUN  $SqlServiceName = 'MSSQL$SQLEXPRESS'; \
     # Set-itemproperty -path ('HKLM:\software\microsoft\microsoft sql server\' + $id + '\mssqlserver') -name DefaultData -value $databaseFolder; \
     # Set-itemproperty -path ('HKLM:\software\microsoft\microsoft sql server\' + $id + '\mssqlserver') -name DefaultLog -value $databaseFolder; 
 
-#Step 6 - Check to Install Updates -CU - were not doing it that way any more - did update above at SysPrep stage
-RUN echo "Disabled -Step 6 - Check to Install Updates -CU - Skipping!"
-# RUN if (-not [string]::IsNullOrEmpty($env:CU)) { \
-#         $ProgressPreference = 'SilentlyContinue'; \
-#         Write-Host ('Install CU from ' + $env:CU) ; \
-#          Invoke-WebRequest -UseBasicParsing -Uri $env:CU -OutFile c:\SQLServer-cu.exe ; \
-#          .\SQLServer-cu.exe /q /IAcceptSQLServerLicenseTerms /Action=Patch /AllInstances ; \
-#         $try = 0; \
-#         while ($try -lt 20) { \
-#             try { \
-#                 $var = sqlcmd -Q 'select SERVERPROPERTY(''productversion'') as version' -W -m 1 | ConvertFrom-Csv | Select-Object -Skip 1 ; \
-#                 if ($var.version[0] -eq $env:VERSION) { \
-#                     Write-Host ('Patch done, found expected version ' + $var.version[0]) ; \
-#                     $try = 21 ; \
-#                 } else { \
-#                     Write-Host ('Patch seems to be ongoing, found version ' + $var.version[0] + ', try ' + $try) ; \
-#                 } \
-#             } catch { \
-#                 Write-Host 'Something unexpected happened, try' $try ; \
-#                 Write-Host $_.ScriptStackTrace ; \
-#             } finally { \
-#                 if ($try -lt 20) { \
-#                     Start-Sleep -Seconds 60 ; \
-#                 } \
-#                 $try++ ; \
-#             } \
-#         } \
-#         if ($try -eq 20) { \
-#             Write-Error 'Patch failed' \
-#         } else { \
-#             Write-Host 'Successfully patched!' \
-#         } \
-#      \
-#      remove-item c:\SQLServer-cu.exe -ErrorAction SilentlyContinue; \
-#      }
+#Step 6: Set and create working directory for script execution
+RUN echo 'Step 6: Set and create working directory for script execution at c:\scripts'
+WORKDIR C:\scripts
 
-RUN echo "Skipped! -Finish step 6  CU Update!"
+#Step 7: Copy Start.ps1 to image on scripts directory
+RUN echo 'Step 7: Copy Start.ps1 to image on scripts directory'
+COPY start.ps1 C:\scripts
 
-
-
-#Step 7: Set and create working directory for script execution
-RUN echo 'Step 7: Set and create working directory for script execution at c:\scripts'
-WORKDIR C:/scripts
-
-#Step 8: Copy Start.ps1 to image on scripts directory
-RUN echo 'Step 8: Copy Start.ps1 to image on scripts directory'
-COPY start.ps1 C:/scripts
-
-#Step 9: Run PowerShell script Start.ps1, passing inside the script  the -ACCEPT_EULA parameter with a value of Y
+#Step 8: Run PowerShell script Start.ps1, passing inside the script  the -ACCEPT_EULA parameter with a value of Y
 # and $sa_password to create/change sa password
 # and json strcuture to attach_dbs
 # BUT ACTUALLY we don't inserting these values here , but in Docker-compose.yaml file ore in docker run command
-RUN echo 'Step 9: Run PowerShell script Start.ps1, passing inside the script  the -ACCEPT_EULA parameter with \
+RUN echo 'Step 8: Run PowerShell script Start.ps1, passing inside the script  the -ACCEPT_EULA parameter with \
  a value of Y etc'
 CMD .\start.ps1  
 
