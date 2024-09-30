@@ -1,9 +1,13 @@
-# MS SQL Server container image version 2022 + CU11 Build version 16.0.4105.2
+# MS SQL Server container image version 2022 + CU15 Build version 16.0.4105.2
 An **unofficial**, **unsupported** and **in no way connected to Microsoft** container image for MS SQL Server
 
 ~~Resulting container images can be found at the Docker hub ([MS SQL Developer Edition](https://hub.docker.com/r/tobiasfenster/mssql-server-dev-unsupported/tags?page=1&ordering=last_updated) / [MS SQL Express](https://hub.docker.com/r/tobiasfenster/mssql-server-exp-unsupported/tags?page=1&ordering=last_updated))~~ **Update:** I was told by Microsoft that sharing the images on the Docker hub violates the EULA, so I had to remove them.
 
 More background and instructions for usage in [this blog post](https://tobiasfenster.io/ms-sql-server-in-windows-containers)
+
+# Update 30/09/2024:
+This version was updated and modified to support Microsoft SQL Server 2022 Developer Edition on Windows.
+This version will update the container to Cumulative Update 15 (CU15) build version 16.0.????.?
 
 # Update 02.07.2024:
 This version was updated by me, Isaac Kramer based on the work of Tobias.
