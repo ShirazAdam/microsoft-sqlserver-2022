@@ -3,11 +3,41 @@
 # The script sets the sa password and start the SQL Service
 # Also it attaches additional database from the disk
 
+param(
+    [Parameter(
+        Mandatory=$true,
+        ParameterSetName="accept_eula",
+        ValueFromPipeline=$true,
+        ValueFromPipelineByPropertyName=$true,
+        HelpMessage="You must accept the EULA by typing 'Y' or 'y'")]
+    [ValidateNotNullOrEmpty()]
+    [char]
+    $accept_eula,
+
+    [Parameter(Mandatory=$false)]
+    [SecureString]
+    $sa_password,
+
+    [Parameter(Mandatory=$false)]
+    [string]
+    $attach_dbs,
+
+    [Parameter(Mandatory=$false)]
+    [string[]]
+    $before_startup,
+
+    [Parameter(Mandatory=$false)]
+    [string[]]
+    $after_startup 
+)
+
+<#
 $sa_password = $env:sa_password
 $attach_dbs = $env:attach_dbs
 $accept_eula = $env:accept_eula
 $before_startup = $env:before_startup
 $after_startup = $env:after_startup
+#>
 
 if($accept_eula -ne "Y" -And $accept_eula -ne "y")
 {
