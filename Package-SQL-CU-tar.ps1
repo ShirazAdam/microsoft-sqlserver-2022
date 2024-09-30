@@ -43,7 +43,7 @@ Windows/Microsoft.Net/assembly/GAC_MSIL/Microsoft.SqlServer.CustomControls.resou
 
 Clear-Host
 ## Update these two variables
-$cuname = "CU12"
+$cuname = "CU15"
 $extracted_to_path = "C:\c4d360c0e0e01d0bee37842e9d" # Path where the updated has extracted itself when the .exe is run
 
 $ErrorActionPreference = "Stop"
