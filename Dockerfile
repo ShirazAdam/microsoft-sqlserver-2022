@@ -35,8 +35,8 @@ LABEL maintainer "Shiraz Adam: https://github.com/ShirazAdam/mssql-dev-v2022"
 
 
 #Step 1.1 define ev and args:
-ARG CU="" 
-ARG VERSION 
+ARG CU="15" 
+ARG VERSION="16.0.4541.4"
 ARG TYPE="dev"
 ARG sa_password
 
