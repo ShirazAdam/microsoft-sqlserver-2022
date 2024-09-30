@@ -17,6 +17,7 @@ The steps for this build are explaind in the Dockerfile. You need 3 setup folder
 
 SQL Server 2022 Developer for Windows container build 16.0.4145.4. This should also work for other editions of SQL Server.
 
+Added missing files and folders PowerShell script from https://gist.github.com/jermicus/a117c6727894407161ba9ac72fd02bce
 
 # Update 02.07.2024:
 This version was updated by me, Isaac Kramer based on the work of Tobias.
