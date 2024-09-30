@@ -15,9 +15,9 @@ The steps for this build are explaind in the Dockerfile. You need 3 setup folder
 2. The CU update (in this case CU15) EXE file (don't need to be extacted) in '\SQLSetupMedia\CU\CU15\SQLServer2022-KB5041321-x64.exe'
 3. Due to strange bug that the servercore 2022 image don't have old server controls (used to be at 1809) you must have The missing server control files/folders that is a bunch of folders which include old control DLLs under 'Missing' folder. Explained over at https://github.com/microsoft/mssql-docker/issues/540. 4 subfolders need to be in the folder '\SQLSetupMedia\CU\CU15\Missing\' to fix this strange bug which Isaac Kramer has mentioned. You can get them from an old SQL Server installation from the GAC folder. For convenience, Isaac Kramer has kindly uploaded a zip file with all the folders which you can just drop it at the location mentioned. Please look at the zip file 'OldServerControlsFolders.zip'
 
-SQL Server 2022 Developer for Windows container build 16.0.4145.4. This should also work for other editions of SQL Server but I have not tested the other versions.
+Unofficial Microsoft SQL Server 2022 Developer for Windows container build 16.0.4145.4. This should also work for other editions of SQL Server but I have not tested the other versions.
 
-Use 'start.ps1' for the standard containerisation process of MS SQL Server 2022 Developer Edition and CU15 following the instructions above.
+Use 'start.ps1' for the standard containerisation process of Microsoft SQL Server 2022 Developer Edition and CU15 following the instructions above.
 Use 'Package-SQL-CU-tar.ps1' to create a tar with the CU15 files only. original source taken from https://gist.github.com/jermicus/a117c6727894407161ba9ac72fd02bce. 
 
 # Update 02.07.2024:
