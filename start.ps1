@@ -35,9 +35,6 @@ else
 # start the service
 Write-Host "Starting SQL Server"
 $SqlServiceName = 'MSSQLSERVER'; 
-if (-not [string]::isNullOrEmpty($env:EXP_EXE)) { 
-    $SqlServiceName = 'MSSQL$SQLEXPRESS'; 
-} 
 start-service $SqlServiceName
 
 if($sa_password -eq "_") {

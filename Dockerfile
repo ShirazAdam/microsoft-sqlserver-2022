@@ -35,13 +35,11 @@ LABEL maintainer "Shiraz Adam: https://github.com/ShirazAdam/mssql-dev-v2022"
 
 
 #Step 1.1 define ev and args:
-ARG DEV_EXE="Something"   
 ARG CU="" 
 ARG VERSION 
 ARG TYPE="dev"
 ARG sa_password
 
-ENV DEV_EXE=${DEV_EXE} 
 ENV CU=$CU 
 ENV VERSION=${VERSION}
 ENV sa_password="Vmw0NTY3dmxzaTI1MDAh"
@@ -97,8 +95,7 @@ RUN $ProgressPreference = 'SilentlyContinue'; \
 
 #Step 4: Install SQL Server Developer SysPrep (Only Prepare Image with FULL UPDATES) via command line inside powershell
 RUN echo 'Step 4: Install SQL Server Developer SysPrep (Only Prepare Image with FULL UPDATES) via command line inside powershell'
-RUN if (-not [string]::IsNullOrEmpty($env:DEV_EXE)) { \
-        .\Temp_SQLDev_Setup\SETUP.exe /q /ACTION=PrepareImage   \
+RUN     .\Temp_SQLDev_Setup\SETUP.exe /q /ACTION=PrepareImage   \
         /INSTANCEID=MSSQLDEV  \
         /IACCEPTSQLSERVERLICENSETERMS /SUPPRESSPRIVACYSTATEMENTNOTICE /IACCEPTPYTHONLICENSETERMS \
         /IACCEPTROPENLICENSETERMS  \
@@ -125,8 +122,7 @@ RUN if (-not [string]::IsNullOrEmpty($env:DEV_EXE)) { \
 RUN echo 'Step 4.5 Install SQL Server Developer 'Complete Image' AFTER SysPrep Stage via command line inside powershell'
 RUN mkdir 'C:\databases';
 
-RUN if (-not [string]::IsNullOrEmpty($env:DEV_EXE)) { \
-        .\Temp_SQLDev_Setup\SETUP.exe /q /ACTION=CompleteImage /INSTANCEID=MSSQLDEV \
+RUN     .\Temp_SQLDev_Setup\SETUP.exe /q /ACTION=CompleteImage /INSTANCEID=MSSQLDEV \
         /IACCEPTSQLSERVERLICENSETERMS /SUPPRESSPRIVACYSTATEMENTNOTICE /IACCEPTPYTHONLICENSETERMS \
         /IACCEPTROPENLICENSETERMS  \
         /INDICATEPROGRESS \
