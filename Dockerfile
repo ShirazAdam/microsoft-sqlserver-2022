@@ -77,16 +77,17 @@ WORKDIR /
 
 
 #Step 3.4 setup PowerShell for  error messages and user
-RUN echo 'Step 3.4 setup PowerShell for  error messages and user'
+RUN echo 'Step 3.4 setup PowerShell for error messages and user'
 SHELL ["powershell", "-Command", "$ErrorActionPreference = 'Stop'; $ProgressPreference = 'SilentlyContinue';"]
 USER ContainerAdministrator
 
-#Step 3.5 get chocolatey to install 7zip vim and sqlpackage
-RUN echo 'Step 3.5 get chocolatey to install 7zip vim and sqlpackage'
+
+#Step 3.5 get chocolatey to install 7zip and sqlpackage
+RUN echo 'Step 3.5 get chocolatey to install 7zip and sqlpackage'
 RUN $ProgressPreference = 'SilentlyContinue'; \
     Invoke-Expression ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1')); \
     choco feature enable -n allowGlobalConfirmation; \
-    choco install --no-progress --limit-output vim 7zip sqlpackage; \
+    choco install --no-progress --limit-output 7zip sqlpackage; \
      # Setup and use the Chocolatey helpers
     Import-Module "${ENV:ChocolateyInstall}\helpers\chocolateyProfile.psm1"; \
     Update-SessionEnvironment;
