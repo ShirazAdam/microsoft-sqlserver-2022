@@ -94,17 +94,17 @@ SHELL ["powershell", "-Command", "$ErrorActionPreference = 'Stop'; $ProgressPref
 USER ContainerAdministrator
 
 
-#Step 3.5 get chocolatey to install 7zip and sqlpackage
-RUN echo 'Step 3.5 get chocolatey to install 7zip and sqlpackage'
-RUN $ProgressPreference = 'SilentlyContinue'; \
-    Invoke-Expression ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1')); \
-    choco feature enable -n allowGlobalConfirmation; \
-    choco install --no-progress --limit-output 7zip sqlpackage; \
-     # Setup and use the Chocolatey helpers
-    Import-Module "${ENV:ChocolateyInstall}\helpers\chocolateyProfile.psm1"; \
-    Update-SessionEnvironment;
-    # Import-Module "$env:ChocolateyInstall\helpers\chocolateyProfile.psm1" - didn't worked for me here \
-    # refreshenv;      - didn't worked for me here
+# #Step 3.5 get chocolatey to install 7zip and sqlpackage
+# RUN echo 'Step 3.5 get chocolatey to install 7zip and sqlpackage'
+# RUN $ProgressPreference = 'SilentlyContinue'; \
+#     Invoke-Expression ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1')); \
+#     choco feature enable -n allowGlobalConfirmation; \
+#     choco install --no-progress --limit-output 7zip sqlpackage; \
+#      # Setup and use the Chocolatey helpers
+#     Import-Module "${ENV:ChocolateyInstall}\helpers\chocolateyProfile.psm1"; \
+#     Update-SessionEnvironment;
+#     # Import-Module "$env:ChocolateyInstall\helpers\chocolateyProfile.psm1" - didn't worked for me here \
+#     # refreshenv;      - didn't worked for me here
 
 #Step 4: Install SQL Server Developer SysPrep (Only Prepare Image with FULL UPDATES) via command line inside powershell
 RUN echo 'Step 4: Install SQL Server Developer SysPrep (Only Prepare Image with FULL UPDATES) via command line inside powershell'
@@ -118,14 +118,13 @@ RUN     .\Temp_SQLDev_Setup\SETUP.exe /q /ACTION=PrepareImage   \
         # /SECURITYMODE=SQL /SAPWD=$sa_password /SQLSVCACCOUNT="NT AUTHORITY\NETWORK SERVICE" \
         # /SQLSYSADMINACCOUNTS='BUILTIN\ADMINISTRATORS'  \
         #  /UPDATEENABLED=True /UpdateSource='C:\Temp_CU_Setup\SQLServer2022-KB5041321-x64.exe' \
-         /UPDATEENABLED=True /UpdateSource='C:\Temp_CU_Setup' \
+         /UPDATEENABLED=True /UpdateSource='C:/Temp_CU_Setup' \
         # /FEATURES=SQLEngine; \
         #  SQL= Installs the SQL Server Database Engine, Replication, Fulltext, and Data Quality Server.
         #  SQLEngine= Installs Only the SQL Server Database Engine.
-        /FEATURES=SQL; \
+        /FEATURES=SQL;
         #test without delete - remove if nessacery: \
         # remove-item -recurse -force c:\Temp_SQLDev_Setup -ErrorAction SilentlyContinue; \
-    }
         # Few tests here:
         # or:
         # /FEATURES=SQL,AS,IS \
@@ -133,7 +132,7 @@ RUN     .\Temp_SQLDev_Setup\SETUP.exe /q /ACTION=PrepareImage   \
     
 #Step 4.5 Install SQL Server Developer 'Complete Image' AFTER SysPrep Stage above via command line inside powershell
 RUN echo 'Step 4.5 Install SQL Server Developer 'Complete Image' AFTER SysPrep Stage via command line inside powershell'
-RUN mkdir 'C:\databases';
+RUN mkdir 'C:/databases';
 
 RUN     .\Temp_SQLDev_Setup\SETUP.exe /q /ACTION=CompleteImage /INSTANCEID=MSSQLDEV \
         /IACCEPTSQLSERVERLICENSETERMS /SUPPRESSPRIVACYSTATEMENTNOTICE /IACCEPTPYTHONLICENSETERMS \
@@ -150,12 +149,11 @@ RUN     .\Temp_SQLDev_Setup\SETUP.exe /q /ACTION=CompleteImage /INSTANCEID=MSSQL
         /TCPENABLED=1 /NPENABLED=1    \
         # /FEATURES=SQLEngine \
         # /FEATURES=SQL; \
-        /SQLUSERDBDIR='C:\databases' /SQLUSERDBLOGDIR='C:\databases'; \ 
+        /SQLUSERDBDIR='C:/databases' /SQLUSERDBLOGDIR='C:/databases'; \ 
         #test without delete - remove if nessacery:
         #clean up install media file to reduce container size
         remove-item -recurse -force c:\Temp_SQLDev_Setup -ErrorAction SilentlyContinue; \
-        remove-item -recurse -force c:\Temp_CU_Setup -ErrorAction SilentlyContinue; \
-    }
+        remove-item -recurse -force c:\Temp_CU_Setup -ErrorAction SilentlyContinue;
         # or:
         # /FEATURES=SQL,AS,IS \
         # /AGTSVCACCOUNT="NT AUTHORITY\System"  
@@ -169,7 +167,7 @@ RUN echo 'Step 5: Finished  Basic setup, now configure SERVICES and Registry Val
 RUN  $SqlServiceName = 'MSSQLSERVER'; \
     While (!(get-service $SqlServiceName -ErrorAction SilentlyContinue)) { Start-Sleep -Seconds 5 } ; \
     Stop-Service $SqlServiceName ; \
-    $databaseFolder = 'c:\databases'; \
+    $databaseFolder = 'c:/databases'; \
     # mkdir > $null don't throw exception when dir already exist
     # this command creates directory and not return exception if already exist as we create it above
     New-Item -Path  $databaseFolder -ItemType Directory -Force; \
@@ -201,11 +199,11 @@ RUN  $SqlServiceName = 'MSSQLSERVER'; \
 
 #Step 6: Set and create working directory for script execution
 RUN echo 'Step 6: Set and create working directory for script execution at C:\Temp_Scripts'
-WORKDIR C:\Temp_Scripts
+WORKDIR C:/Temp_Scripts
 
 #Step 7: Copy Start.ps1 to image on scripts directory
 RUN echo 'Step 7: Copy Start.ps1 to image on scripts directory'
-COPY start.ps1 C:\Temp_Scripts
+COPY start.ps1 C:/Temp_Scripts
 
 #Step 8: Run PowerShell script Start.ps1, passing inside the script  the -ACCEPT_EULA parameter with a value of Y
 # and $sa_password to create/change sa password
