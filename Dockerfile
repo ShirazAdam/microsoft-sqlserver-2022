@@ -20,9 +20,9 @@
 
 # How to use after build:
 # docker build `
-# --build-arg VERSION=16.0.1000.6 --build-arg TYPE=exp `
+# --build-arg VERSION=16.0.4541.4 --build-arg TYPE=dev `
 # -f Dockerfile.prep.txt ` (or without this line for fileName regular Dockerfile...)
-# -t mssqlserver2022-dev-sysprep:2022-win-CU15-v1.0.
+# -t mssqlserver-2022-dev:2022-win-CU15-v1.0.
 
 
 
@@ -131,7 +131,7 @@ RUN     .\Temp_SQLDev_Setup\SETUP.exe /q /ACTION=PrepareImage   \
         # /AGTSVCACCOUNT="NT AUTHORITY\System"  
     
 #Step 4.5 Install SQL Server Developer 'Complete Image' AFTER SysPrep Stage above via command line inside powershell
-RUN echo 'Step 4.5 Install SQL Server Developer 'Complete Image' AFTER SysPrep Stage via command line inside powershell'
+RUN echo 'Step 4.5 Install SQL Server Developer ''Complete Image'' AFTER SysPrep Stage via command line inside powershell'
 RUN mkdir 'C:/databases';
 
 RUN     .\Temp_SQLDev_Setup\SETUP.exe /q /ACTION=CompleteImage /INSTANCEID=MSSQLDEV \
@@ -164,8 +164,8 @@ RUN     .\Temp_SQLDev_Setup\SETUP.exe /q /ACTION=CompleteImage /INSTANCEID=MSSQL
 #     } `
 #Step 5 - Finished  Basic setup, now configure SERVICES and Registry Values
 RUN echo 'Step 5: Finished  Basic setup, now configure SERVICES and Registry Values'
-RUN  $SqlServiceName = 'MSSQLSERVER'; \
-    While (!(get-service $SqlServiceName -ErrorAction SilentlyContinue)) { Start-Sleep -Seconds 5 } ; \
+RUN  $SqlServiceName = 'MSSQL$MSSQLSERVER'; \
+    While (!(get-service $SqlServiceName)) { Start-Sleep -Seconds 5 } ; \
     Stop-Service $SqlServiceName ; \
     $databaseFolder = 'c:/databases'; \
     # mkdir > $null don't throw exception when dir already exist
@@ -195,7 +195,7 @@ RUN  $SqlServiceName = 'MSSQLSERVER'; \
     Set-itemproperty -path ('HKLM:\software\microsoft\microsoft sql server\' + $id + '\mssqlserver') -name LoginMode -value 2; 
     # not needed anymore , set it above at  /SQLUSERDBDIR='C:\databases' /SQLUSERDBLOGDIR='C:\databases'; \ 
     # Set-itemproperty -path ('HKLM:\software\microsoft\microsoft sql server\' + $id + '\mssqlserver') -name DefaultData -value $databaseFolder; \
-    # Set-itemproperty -path ('HKLM:\software\microsoft\microsoft sql server\' + $id + '\mssqlserver') -name DefaultLog -value $databaseFolder; 
+    # Set-itemproperty -path ('HKLM:\software\microsoft\microsoft sql server\' + $id + '\mssqlserver') -name DefaultLog -value $databaseFolder;
 
 #Step 6: Set and create working directory for script execution
 RUN echo 'Step 6: Set and create working directory for script execution at C:\Temp_Scripts'
