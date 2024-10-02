@@ -202,7 +202,12 @@ RUN $SqlServiceName = 'MSSQL$MSSQLDEV'; \
     #     Value = $PSHome \
     # }; \
     # New-ItemProperty @newItemPropertySplat; \
-    New-ItemProperty -path ('HKLM:\software\microsoft\microsoft sql server\' + $id + '\mssqlserver\supersocketnetlib\tcp\ipall') -name sqlserverdeveloper -value ''; \
+    # While ($true) { echo 'HKLM:\software\microsoft\microsoft sql server\' + $id + '\mssqlserver\supersocketnetlib\tcp\ipall'; Start-Sleep -Seconds 5; }; \
+    New-Item -path ('HKLM:\SOFTWARE\Microsoft\Microsoft SQL Server\' + $id + '\'); \
+    New-Item -path ('HKLM:\SOFTWARE\Microsoft\Microsoft SQL Server\' + $id + '\MSSQLServer\'); \
+    New-Item -path ('HKLM:\SOFTWARE\Microsoft\Microsoft SQL Server\' + $id + '\MSSQLServer\SuperSocketNetLib\'); \
+    New-Item -path ('HKLM:\SOFTWARE\Microsoft\Microsoft SQL Server\' + $id + '\MSSQLServer\SuperSocketNetLib\Tcp\'); \
+    New-Item -path ('HKLM:\SOFTWARE\Microsoft\Microsoft SQL Server\' + $id + '\MSSQLServer\SuperSocketNetLib\Tcp\IPAll'); \
     Set-itemproperty -path ('HKLM:\software\microsoft\microsoft sql server\' + $id + '\mssqlserver\supersocketnetlib\tcp\ipall') -name tcpdynamicports -value '' ; \
     Set-itemproperty -path ('HKLM:\software\microsoft\microsoft sql server\' + $id + '\mssqlserver\supersocketnetlib\tcp\ipall') -name tcpdynamicports -value '' ; \
     Set-itemproperty -path ('HKLM:\software\microsoft\microsoft sql server\' + $id + '\mssqlserver\supersocketnetlib\tcp\ipall') -name tcpport -value 1433 ; \
