@@ -126,7 +126,7 @@ RUN $SqlServiceName = 'MSSQL$MSSQLDEV'; \
     Write-Verbose ''; \
     Write-Warning ''; \
     Write-Debug ''; \
-    While (!(get-service $SqlServiceName -ErrorAction Continue)) { Start-Sleep -Seconds 5 } ; \
+    While (!(get-service $SqlServiceName -ErrorAction SilentlyContinue)) { Start-Sleep -Seconds 5 } ; \
     Stop-Service $SqlServiceName ; \
     $databaseFolder = 'c:/databases'; \
     New-Item -Path  $databaseFolder -ItemType Directory -Force; \
