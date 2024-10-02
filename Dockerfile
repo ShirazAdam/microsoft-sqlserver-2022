@@ -46,6 +46,7 @@ ENV attach_dbs="[]"
 ENV accept_eula="_"
 ENV sa_password_path="C:\ProgramData\Docker\secrets\sa-password"
 
+
 #Step 2.0: Create temporary directory to hold SQL Server installation files + CU
 RUN echo "Step 2.0: Create temporary directory to hold SQL Server installation files + CU"
 # RUN powershell -command ('C:')
@@ -59,6 +60,7 @@ RUN powershell -Command (MKDIR 'C:/Temp_CU_Setup')
 # as explained in the github issue above
 RUN echo 'Step 2.1 because of error on CU install need to copy ahead missing files to GAC'
 COPY 'SQLSetupMedia/CU/CU15/Missing/' 'C:/Windows/Microsoft.Net/assembly/GAC_MSIL'
+
 
 #Step 3.0: Copy SQL Server XXXX installation files from the host to the container image
 RUN echo 'Step 3.0: Copy SQL Server XXXX installation files from the host to the container image'
@@ -86,12 +88,10 @@ RUN powershell -Command "(ls -r | measure -sum Length)"
 #back to origin
 WORKDIR '/'
 
-
 #Step 3.4 setup PowerShell for  error messages and user
 RUN echo 'Step 3.4 setup PowerShell for error messages and user'
 SHELL ["powershell", "-Command", "$ErrorActionPreference = 'Stop'; $ProgressPreference = 'SilentlyContinue';"]
 USER ContainerAdministrator
-
 
 #Step 3.5 get chocolatey to install 7zip and sqlpackage
 RUN echo 'Step 3.5 get chocolatey to install 7zip and sqlpackage'
@@ -104,6 +104,7 @@ RUN $ProgressPreference = 'SilentlyContinue'; \
     Update-SessionEnvironment;
     # Import-Module "$env:ChocolateyInstall\helpers\chocolateyProfile.psm1" - didn't worked for me here \
     # refreshenv;      - didn't worked for me here
+
 
 #Step 4.0: Install SQL Server Developer SysPrep (Only Prepare Image with FULL UPDATES) via command line inside powershell
 RUN echo 'Step 4.0: Install SQL Server Developer SysPrep (Only Prepare Image with FULL UPDATES) via command line inside powershell'
@@ -157,6 +158,7 @@ RUN     .\Temp_SQLDev_Setup\SETUP.exe /q /ACTION=CompleteImage /INSTANCEID=MSSQL
         # /FEATURES=SQL,AS,IS \
         # /AGTSVCACCOUNT="NT AUTHORITY\System"  
 
+        
 #Step 5 - Finished  Basic setup, now configure SERVICES and Registry Values
 RUN echo 'Step 5: Finished  Basic setup, now configure SERVICES and Registry Values'
 RUN  $SqlServiceName = 'MSSQL$MSSQLDEV'; \
@@ -199,13 +201,16 @@ RUN  $SqlServiceName = 'MSSQL$MSSQLDEV'; \
     # Set-itemproperty -path ('HKLM:\software\microsoft\microsoft sql server\' + $id + '\mssqlserver') -name DefaultData -value $databaseFolder; \
     # Set-itemproperty -path ('HKLM:\software\microsoft\microsoft sql server\' + $id + '\mssqlserver') -name DefaultLog -value $databaseFolder;
 
+
 #Step 6: Set and create working directory for script execution
 RUN echo 'Step 6: Set and create working directory for script execution at C:\Temp_Scripts'
 WORKDIR C:/Temp_Scripts
 
+
 #Step 7: Copy Start.ps1 to image on scripts directory
 RUN echo 'Step 7: Copy Start.ps1 to image on scripts directory'
 COPY start.ps1 C:/Temp_Scripts
+
 
 #Step 8: Run PowerShell script Start.ps1, passing inside the script  the -ACCEPT_EULA parameter with a value of Y
 # and $sa_password to create/change sa password
