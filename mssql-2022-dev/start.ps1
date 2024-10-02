@@ -34,10 +34,7 @@ else
 
 # start the service
 Write-Host "Starting SQL Server"
-$SqlServiceName = 'MSSQLSERVER'; 
-if (-not [string]::isNullOrEmpty($env:EXP_EXE)) { 
-    $SqlServiceName = 'MSSQL$SQLEXPRESS'; 
-} 
+$SqlServiceName = 'MSSQL$MSSQLDEV';
 start-service $SqlServiceName
 
 if($sa_password -eq "_") {
@@ -103,4 +100,5 @@ while ($true)
     Get-EventLog -LogName Application -Source "MSSQL*" -After $lastCheck | Select-Object TimeGenerated, EntryType, Message	 
     $lastCheck = Get-Date 
     Start-Sleep -Seconds 2 
+    Write-Host $lastCheck
 }
