@@ -92,17 +92,17 @@ RUN echo 'Step 3.4 setup PowerShell for error messages and user'
 SHELL ["powershell", "-Command", "$ErrorActionPreference = 'Stop'; $ProgressPreference = 'SilentlyContinue';"]
 USER ContainerAdministrator
 
-#Step 3.5 get chocolatey to install 7zip and sqlpackage
-RUN echo 'Step 3.5 get chocolatey to install 7zip and sqlpackage'
-RUN $ProgressPreference = 'SilentlyContinue'; \
-    Invoke-Expression ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1')); \
-    choco feature enable -n allowGlobalConfirmation; \
-    choco install --no-progress --limit-output 7zip sqlpackage; \
-     # Setup and use the Chocolatey helpers
-    Import-Module "${ENV:ChocolateyInstall}\helpers\chocolateyProfile.psm1"; \
-    Update-SessionEnvironment;
-    # Import-Module "$env:ChocolateyInstall\helpers\chocolateyProfile.psm1" - didn't worked for me here \
-    # refreshenv;      - didn't worked for me here
+# #Step 3.5 get chocolatey to install 7zip and sqlpackage
+# RUN echo 'Step 3.5 get chocolatey to install 7zip and sqlpackage'
+# RUN $ProgressPreference = 'SilentlyContinue'; \
+#     Invoke-Expression ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1')); \
+#     choco feature enable -n allowGlobalConfirmation; \
+#     choco install --no-progress --limit-output 7zip sqlpackage; \
+#      # Setup and use the Chocolatey helpers
+#     Import-Module "${ENV:ChocolateyInstall}\helpers\chocolateyProfile.psm1"; \
+#     Update-SessionEnvironment;
+#     # Import-Module "$env:ChocolateyInstall\helpers\chocolateyProfile.psm1" - didn't worked for me here \
+#     # refreshenv;      - didn't worked for me here
 
 
 #Step 4.0: Install SQL Server Developer SysPrep (Only Prepare Image with FULL UPDATES) via command line inside powershell
@@ -133,34 +133,34 @@ RUN     .\Temp_SQLDev_Setup\SETUP.exe /q /ACTION=PrepareImage   \
 RUN echo 'Step 4.1 Install SQL Server Developer ''Complete Image'' AFTER SysPrep Stage via command line inside powershell'
 RUN mkdir 'C:/databases';
 
-RUN     .\Temp_SQLDev_Setup\SETUP.exe /q /ACTION=CompleteImage /INSTANCEID=MSSQLDEV \
-        /IACCEPTSQLSERVERLICENSETERMS /SUPPRESSPRIVACYSTATEMENTNOTICE /IACCEPTPYTHONLICENSETERMS \
-        /IACCEPTROPENLICENSETERMS  \
-        /INDICATEPROGRESS \
-        /INSTANCENAME=MSSQLDEV  /INSTANCEID=MSSQLDEV \
-        # /SECURITYMODE=SQL /SQLSVCACCOUNT="NT AUTHORITY\NETWORK SERVICE" \
-        # The password here we are inserting is NOT IMPORTANT because we change it at docker run (container) \
-        # so you can enter here anything but must be SOMETHING, otherwise it won't work. \
-        /SECURITYMODE=SQL /SAPWD='blaBlaBlaPass1!' /SQLSVCACCOUNT='NT AUTHORITY\NETWORK SERVICE' \
-        # /SECURITYMODE=SQL /SAPWD=$sa_password /SQLSVCACCOUNT="NT AUTHORITY\NETWORK SERVICE" \
-        /AGTSVCACCOUNT='NT AUTHORITY\NETWORK SERVICE' \
-        /SQLSYSADMINACCOUNTS='BUILTIN\ADMINISTRATORS' \
-        /TCPENABLED=1 /NPENABLED=1    \
-        # /FEATURES=SQLEngine \
-        # /FEATURES=SQL; \
-        /SQLUSERDBDIR='C:/databases' /SQLUSERDBLOGDIR='C:/databases'; \ 
-        #test without delete - remove if nessacery:
-        #clean up install media file to reduce container size
-        remove-item -recurse -force c:\Temp_SQLDev_Setup -ErrorAction SilentlyContinue; \
-        remove-item -recurse -force c:\Temp_CU_Setup -ErrorAction SilentlyContinue;
-        # or:
-        # /FEATURES=SQL,AS,IS \
-        # /AGTSVCACCOUNT="NT AUTHORITY\System"  
+RUN .\Temp_SQLDev_Setup\SETUP.exe /q /ACTION=CompleteImage /INSTANCEID=MSSQLDEV \
+    /IACCEPTSQLSERVERLICENSETERMS /SUPPRESSPRIVACYSTATEMENTNOTICE /IACCEPTPYTHONLICENSETERMS \
+    /IACCEPTROPENLICENSETERMS  \
+    /INDICATEPROGRESS \
+    /INSTANCENAME=MSSQLDEV  /INSTANCEID=MSSQLDEV \
+    # /SECURITYMODE=SQL /SQLSVCACCOUNT="NT AUTHORITY\NETWORK SERVICE" \
+    # The password here we are inserting is NOT IMPORTANT because we change it at docker run (container) \
+    # so you can enter here anything but must be SOMETHING, otherwise it won't work. \
+    /SECURITYMODE=SQL /SAPWD='blaBlaBlaPass1!' /SQLSVCACCOUNT='NT AUTHORITY\NETWORK SERVICE' \
+    # /SECURITYMODE=SQL /SAPWD=$sa_password /SQLSVCACCOUNT="NT AUTHORITY\NETWORK SERVICE" \
+    /AGTSVCACCOUNT='NT AUTHORITY\NETWORK SERVICE' \
+    /SQLSYSADMINACCOUNTS='BUILTIN\ADMINISTRATORS' \
+    /TCPENABLED=1 /NPENABLED=1    \
+    # /FEATURES=SQLEngine \
+    # /FEATURES=SQL; \
+    /SQLUSERDBDIR='C:/databases' /SQLUSERDBLOGDIR='C:/databases'; \ 
+    #test without delete - remove if nessacery:
+    #clean up install media file to reduce container size
+    remove-item -recurse -force c:\Temp_SQLDev_Setup -ErrorAction SilentlyContinue; \
+    remove-item -recurse -force c:\Temp_CU_Setup -ErrorAction SilentlyContinue;
+    # or:
+    # /FEATURES=SQL,AS,IS \
+    # /AGTSVCACCOUNT="NT AUTHORITY\System"  
 
 
 #Step 5 - Finished  Basic setup, now configure SERVICES and Registry Values
 RUN echo 'Step 5: Finished  Basic setup, now configure SERVICES and Registry Values'
-RUN  $SqlServiceName = 'MSSQL$MSSQLDEV'; \
+RUN $SqlServiceName = 'MSSQL$MSSQLDEV'; \
     $VerbosePreference = 'continue'; \
     $WarningPreference = 'continue'; \
     $DebugPreference = 'continue'; \
@@ -181,7 +181,7 @@ RUN  $SqlServiceName = 'MSSQL$MSSQLDEV'; \
     Stop-Service $SqlWriterServiceName; \
     Set-Service $SqlBrowserServiceName -startuptype manual ; \
     Stop-Service $SqlBrowserServiceName; \
-    $SqlTelemetryName = 'SQLTELEMETRY'; \
+    $SqlTelemetryName = 'SQLTELEMETRY$MSSQLDEV'; \
     # if ($env:TYPE -eq 'exp') { \
     #     $SqlTelemetryName = 'SQLTELEMETRY$SQLEXPRESS'; \
     # } \
@@ -192,6 +192,17 @@ RUN  $SqlServiceName = 'MSSQL$MSSQLDEV'; \
     # if ($env:TYPE -eq 'exp') { \
     #     $id = ('mssql' + $version.Major + '.SQLEXPRESS'); \
     # } \
+    # [microsoft.win32.registry]::SetValue('HKLM:\software\microsoft\microsoft sql server\' + $id + '\mssqlserver\supersocketnetlib\tcp\ipall', 'SQLServer2022', 'Developer Edition'); \
+    # New-item -path ('HKLM:\software\microsoft\microsoft sql server\' + $id + '\mssqlserver\supersocketnetlib\tcp\ipall') | New-ItemProperty -Name 'SQLServer2022' -Value 'Developer Edition'; \
+    # Set-Location -Path ('HKLM:\software\microsoft\microsoft sql server\' + $id + '\mssqlserver\supersocketnetlib\tcp\ipall'); \
+    # $newItemPropertySplat = @{ \
+    #     Path = 'HKLM:\software\microsoft\microsoft sql server\' + $id + '\mssqlserver\supersocketnetlib\tcp\ipall' \
+    #     Name = 'PowerShellPath' \
+    #     PropertyType = 'String' \
+    #     Value = $PSHome \
+    # }; \
+    # New-ItemProperty @newItemPropertySplat; \
+    New-ItemProperty -path ('HKLM:\software\microsoft\microsoft sql server\' + $id + '\mssqlserver\supersocketnetlib\tcp\ipall') -name sqlserverdeveloper -value ''; \
     Set-itemproperty -path ('HKLM:\software\microsoft\microsoft sql server\' + $id + '\mssqlserver\supersocketnetlib\tcp\ipall') -name tcpdynamicports -value '' ; \
     Set-itemproperty -path ('HKLM:\software\microsoft\microsoft sql server\' + $id + '\mssqlserver\supersocketnetlib\tcp\ipall') -name tcpdynamicports -value '' ; \
     Set-itemproperty -path ('HKLM:\software\microsoft\microsoft sql server\' + $id + '\mssqlserver\supersocketnetlib\tcp\ipall') -name tcpport -value 1433 ; \

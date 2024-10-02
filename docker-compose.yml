@@ -7,7 +7,3 @@ services:
       - 1433:1433
     volumes:
       - C:/
-    #image: mssqlserver-2022-developer-cu15-windows
-    #container-name: mssqlserver-2022-developer-cu15-windows
-    #depends_on: 
-    #  - mcr.microsoft.com/windows/servercore:ltsc2022
