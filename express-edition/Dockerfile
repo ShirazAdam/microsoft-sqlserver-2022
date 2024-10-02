@@ -88,25 +88,25 @@ SHELL ["powershell", "-Command", "$ErrorActionPreference = 'Stop'; $ProgressPref
 USER ContainerAdministrator
 
 
-#Step 4.0: Install SQL Server Developer SysPrep (Only Prepare Image with FULL UPDATES) via command line inside powershell
-RUN echo 'Step 4.0: Install SQL Server Developer SysPrep (Only Prepare Image with FULL UPDATES) via command line inside powershell'
+#Step 4.0: Install SQL Server Express SysPrep (Only Prepare Image with FULL UPDATES) via command line inside powershell
+RUN echo 'Step 4.0: Install SQL Server Express SysPrep (Only Prepare Image with FULL UPDATES) via command line inside powershell'
 RUN     .\Temp_SQLDev_Setup\SETUP.exe /q /ACTION=PrepareImage   \
-        /INSTANCEID=MSSQLDEV  \
+        /INSTANCEID=SQLEXPRESS  \
         /IACCEPTSQLSERVERLICENSETERMS /SUPPRESSPRIVACYSTATEMENTNOTICE /IACCEPTPYTHONLICENSETERMS \
         /IACCEPTROPENLICENSETERMS  \
         /INDICATEPROGRESS \
          /UPDATEENABLED=True /UpdateSource='C:/Temp_CU_Setup' \
         /FEATURES=SQL;
     
-#Step 4.1 Install SQL Server Developer 'Complete Image' AFTER SysPrep Stage above via command line inside powershell
-RUN echo 'Step 4.1 Install SQL Server Developer ''Complete Image'' AFTER SysPrep Stage via command line inside powershell'
+#Step 4.1 Install SQL Server Express 'Complete Image' AFTER SysPrep Stage above via command line inside powershell
+RUN echo 'Step 4.1 Install SQL Server Express ''Complete Image'' AFTER SysPrep Stage via command line inside powershell'
 RUN mkdir 'C:/databases';
 
-RUN .\Temp_SQLDev_Setup\SETUP.exe /q /ACTION=CompleteImage /INSTANCEID=MSSQLDEV \
+RUN .\Temp_SQLDev_Setup\SETUP.exe /q /ACTION=CompleteImage /INSTANCEID=SQLEXPRESS \
     /IACCEPTSQLSERVERLICENSETERMS /SUPPRESSPRIVACYSTATEMENTNOTICE /IACCEPTPYTHONLICENSETERMS \
     /IACCEPTROPENLICENSETERMS  \
     /INDICATEPROGRESS \
-    /INSTANCENAME=MSSQLDEV  /INSTANCEID=MSSQLDEV \
+    /INSTANCENAME=SQLEXPRESS  /INSTANCEID=SQLEXPRESS \
     /SECURITYMODE=SQL /SAPWD='blaBlaBlaPass1!' /SQLSVCACCOUNT='NT AUTHORITY\NETWORK SERVICE' \
     /AGTSVCACCOUNT='NT AUTHORITY\NETWORK SERVICE' \
     /SQLSYSADMINACCOUNTS='BUILTIN\ADMINISTRATORS' \
