@@ -164,7 +164,7 @@ RUN     .\Temp_SQLDev_Setup\SETUP.exe /q /ACTION=CompleteImage /INSTANCEID=MSSQL
 #     } `
 #Step 5 - Finished  Basic setup, now configure SERVICES and Registry Values
 RUN echo 'Step 5: Finished  Basic setup, now configure SERVICES and Registry Values'
-RUN  $SqlServiceName = 'MSSQL$MSSQLSERVER'; \
+RUN  $SqlServiceName = 'MSSQLSERVER'; \
     While (!(get-service $SqlServiceName)) { Start-Sleep -Seconds 5 } ; \
     Stop-Service $SqlServiceName ; \
     $databaseFolder = 'c:/databases'; \
