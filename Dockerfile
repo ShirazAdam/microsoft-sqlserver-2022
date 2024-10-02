@@ -26,9 +26,8 @@
 
 
 #Step 1.0: Start from base image mcr.microsoft.com/windows/servercore
-RUN echo "Step 1.0: Start from base image mcr.microsoft.com/windows/servercore"
 FROM mcr.microsoft.com/windows/servercore:ltsc2022
-RUN echo "Step 1: Start from base image mcr.microsoft.com/windows/servercore"
+RUN echo "Step 1.0: Start from base image mcr.microsoft.com/windows/servercore"
 LABEL maintainer "Shiraz Adam: https://github.com/ShirazAdam/mssql-dev-v2022"
 
 
@@ -158,7 +157,7 @@ RUN     .\Temp_SQLDev_Setup\SETUP.exe /q /ACTION=CompleteImage /INSTANCEID=MSSQL
         # /FEATURES=SQL,AS,IS \
         # /AGTSVCACCOUNT="NT AUTHORITY\System"  
 
-        
+
 #Step 5 - Finished  Basic setup, now configure SERVICES and Registry Values
 RUN echo 'Step 5: Finished  Basic setup, now configure SERVICES and Registry Values'
 RUN  $SqlServiceName = 'MSSQL$MSSQLDEV'; \
