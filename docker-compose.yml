@@ -1,5 +1,3 @@
-version: '2'
-
 services:
   mssqlserver-2022-developer-cu15-windows:
     build: .\
