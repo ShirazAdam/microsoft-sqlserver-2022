@@ -17,7 +17,7 @@ The steps for this build as follows:
 2. The CU update (in this case CU15) EXE file (don't need to be extacted) in '\SQLSetupMedia\CU\CU15\SQLServer2022-KB5041321-x64.exe'
 3. Due to strange bug that the servercore 2022 image don't have old server controls (used to be at 1809) you must have The missing server control files/folders that is a bunch of folders which include old control DLLs under 'Missing' folder. Explained over at https://github.com/microsoft/mssql-docker/issues/540. 4 subfolders need to be in the folder '\SQLSetupMedia\CU\CU15\Missing\' to fix this strange bug which Isaac Kramer has mentioned. You can get them from an old SQL Server installation from the GAC folder. For convenience, Isaac Kramer has kindly uploaded a zip file with all the folders which you can just drop it at the location mentioned. Please look at the zip file 'OldServerControlsFolders.zip'
 3. Switch to Windows containers from the docker desktop options.
-4. Ensure Hyper-V is enabled through Windows Feature
+4. Ensure Hyper-V and Windows Containers are enabled through Windows Feature.
 5. From Windows PowerShell run 'docker-compose up'.
 
 Unofficial Microsoft SQL Server 2022 Developer Edition for Windows container build 16.0.4145.4 with CU15. This should also work for other editions of SQL Server but I have not tested the other versions.
