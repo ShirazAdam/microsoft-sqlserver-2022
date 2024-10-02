@@ -1,7 +1,15 @@
 services:
-  mssql-2022-dev:
-    build: .\mssql-2022-dev
+  developer-edition:
+    build: .\developer-edition
     # command: -t mssqlserver-2022-developer-cu15-windows:v1.0 --build-arg VERSION=16.00.1000.06 --build-arg TYPE=dev --network "Default Switch"
+    restart: always
+    ports:
+      - 1433:1433
+    # volumes:
+    #   - C:/
+  express-edition:
+    build: .\express-edition
+    # command: -t mssqlserver-2022-express-cu15-windows:v1.0 --build-arg VERSION=16.00.1000.06 --build-arg TYPE=exp --network "Default Switch"
     restart: always
     ports:
       - 1433:1433
