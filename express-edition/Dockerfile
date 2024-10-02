@@ -1,4 +1,4 @@
-#Build for  SQL Server 2022 Developer Edition for WINDOWS on server core 2022 + CU15
+#Build for  SQL Server 2022 Express Edition for WINDOWS on Microsoft Windows Server Core 2022 + CU15
 #Created by Shiraz Adam
 #Based on the work of for Isaac Kramer (tzahik1@gmail.com) SQL SERVER Express 2022 WINDOWS on server core 2022 + CU11
 #Based on the work of Tobias Fenster  https://github.com/tfenster/mssql-image/
@@ -8,7 +8,7 @@
 #
 # You need 3 set-up folders on the host to be ready for the build as seen in the Dockerfile:
 
-# 1. The main SQL Server 2022 developer setup media extracted so that the root SETUP.EXE will be in '\SQLSetupMedia\SQLServer2022-x64-ENU-Dev\' folder.
+# 1. The main SQL Server 2022 express setup media extracted so that the root SETUP.EXE will be in '\SQLSetupMedia\ExpressAdv_ENU\' folder.
 # 2. The CU update (in this case CU15) EXE file (don't need to be extacted) in '\SQLSetupMedia\CU\CU15\SQLServer2022-KB5041321-x64.exe'
 # 3. Due to strange bug that the servercore 2022 image don't have old server controls (used to be at 1809) you must 
 #     have The Missing Server control files/folders - which is a bunch of folders which include old control dll's under 'Missing' folder.
@@ -20,7 +20,7 @@
 
 # How to use after build:
 # docker build `
-# --build-arg VERSION=16.0.4541.4 --build-arg TYPE=dev `
+# --build-arg VERSION=16.0.4541.4 `
 # -f Dockerfile.prep.txt ` (or without this line for fileName regular Dockerfile...)
 # -t mssqlserver-2022-dev:2022-win-CU15-v1.0.
 
@@ -35,7 +35,6 @@ LABEL maintainer "Shiraz Adam: https://github.com/ShirazAdam/mssql-dev-v2022"
 RUN echo "Step 1.1 define ev and args"
 ARG CU="15" 
 ARG VERSION="16.0.4541.4"
-ARG TYPE="dev"
 ARG sa_password
 
 ENV CU=$CU 
@@ -61,7 +60,7 @@ COPY 'SQLSetupMedia/CU/CU15/Missing/' 'C:/Windows/Microsoft.Net/assembly/GAC_MSI
 
 #Step 3.0: Copy SQL Server XXXX installation files from the host to the container image
 RUN echo 'Step 3.0: Copy SQL Server XXXX installation files from the host to the container image'
-COPY  'SQLSetupMedia/SQLServer2022-x64-ENU-Exp/'  'C:/Temp_SQLDev_Setup'
+COPY  'SQLSetupMedia/ExpressAdv_ENU/'  'C:/Temp_SQLDev_Setup'
 
 #Step 3.1: Download CU15 installation file from the internet
 RUN powershell $path = 'SQLSetupMedia\CU\CU15\SQLServer2022-KB5041321-x64.exe'; \

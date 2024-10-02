@@ -20,7 +20,7 @@
 
 # How to use after build:
 # docker build `
-# --build-arg VERSION=16.0.4541.4 --build-arg TYPE=dev `
+# --build-arg VERSION=16.0.4541.4 `
 # -f Dockerfile.prep.txt ` (or without this line for fileName regular Dockerfile...)
 # -t mssqlserver-2022-dev:2022-win-CU15-v1.0.
 
@@ -35,7 +35,6 @@ LABEL maintainer "Shiraz Adam: https://github.com/ShirazAdam/mssql-dev-v2022"
 RUN echo "Step 1.1 define ev and args"
 ARG CU="15" 
 ARG VERSION="16.0.4541.4"
-ARG TYPE="dev"
 ARG sa_password
 
 ENV CU=$CU 
