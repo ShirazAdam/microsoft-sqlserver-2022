@@ -1,7 +1,7 @@
 services:
   mssqlserver-2022-developer-cu15-windows:
     build: .\
-    command: "-t mssqlserver-2022-developer-cu15-windows:v1.0 --build-arg VERSION=16.0.4541.4 --build-arg TYPE=dev"
+    command: -t mssqlserver-2022-developer-cu15-windows:v1.0 --build-arg VERSION=16.0.4541.4 --build-arg TYPE=dev --network "Default Switch"
     restart: always
     ports:
       - 1433:1433
