@@ -1,5 +1,5 @@
-# MS SQL Server container image version 2022 + CU15 Build version 16.0.4145.4
-An **unofficial**, **unsupported** and **in no way connected to Microsoft** container image for MS SQL Server Developer Edition
+# MS SQL Server 2022 Developer and Express Docker container images + CU15 Build version 16.0.4145.4
+An **unofficial**, **unsupported** and **in no way connected to Microsoft** container image for MS SQL Server Developer and Express Editions.
 
 # Update 30/09/2024:
 This version was updated and modified to support Microsoft SQL Server 2022 Developer Edition (https://download.microsoft.com/download/c/c/9/cc9c6797-383c-4b24-8920-dc057c1de9d3/SQL2022-SSEI-Dev.exe).
