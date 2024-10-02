@@ -5,13 +5,16 @@ An **unofficial**, **unsupported** and **in no way connected to Microsoft** cont
 This version was updated and modified to support Microsoft SQL Server 2022 Developer Edition (https://download.microsoft.com/download/c/c/9/cc9c6797-383c-4b24-8920-dc057c1de9d3/SQL2022-SSEI-Dev.exe).
 This version will update the container to Cumulative Update 15 (CU15) build version 16.0.4145.4 (https://download.microsoft.com/download/9/6/8/96819b0c-c8fb-4b44-91b5-c97015bbda9f/SQLServer2022-KB5041321-x64.exe)
 
-The steps for this build are explaind in the Dockerfile. You need 3 setup folders on the host to be ready for the build:
+**This image build targets Windows Container using Hyper-V.**
+
+The steps for this build as follows:
 
 1. The main SQL Server 2022 Developer setup media extracted so that the root SETUP.EXE will be in 'SQLSetupMedia\SQLDEV_x64_ENU\' folder.
 2. The CU update (in this case CU15) EXE file (don't need to be extacted) in '\SQLSetupMedia\CU\CU15\SQLServer2022-KB5041321-x64.exe'
 3. Due to strange bug that the servercore 2022 image don't have old server controls (used to be at 1809) you must have The missing server control files/folders that is a bunch of folders which include old control DLLs under 'Missing' folder. Explained over at https://github.com/microsoft/mssql-docker/issues/540. 4 subfolders need to be in the folder '\SQLSetupMedia\CU\CU15\Missing\' to fix this strange bug which Isaac Kramer has mentioned. You can get them from an old SQL Server installation from the GAC folder. For convenience, Isaac Kramer has kindly uploaded a zip file with all the folders which you can just drop it at the location mentioned. Please look at the zip file 'OldServerControlsFolders.zip'
 3. Switch to Windows containers from the docker desktop options.
-4. From Windows PowerShell run 'docker-compose up'.
+4. Ensure Hyper-V is enabled through Windows Feature
+5. From Windows PowerShell run 'docker-compose up'.
 
 Unofficial Microsoft SQL Server 2022 Developer Edition for Windows container build 16.0.4145.4 with CU15. This should also work for other editions of SQL Server but I have not tested the other versions.
 
