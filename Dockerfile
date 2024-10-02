@@ -25,16 +25,15 @@
 # -t mssqlserver-2022-dev:2022-win-CU15-v1.0.
 
 
-
-
-#Step 1: Start from base image mcr.microsoft.com/windows/servercore
+#Step 1.0: Start from base image mcr.microsoft.com/windows/servercore
+RUN echo "Step 1.0: Start from base image mcr.microsoft.com/windows/servercore"
 FROM mcr.microsoft.com/windows/servercore:ltsc2022
 RUN echo "Step 1: Start from base image mcr.microsoft.com/windows/servercore"
-
 LABEL maintainer "Shiraz Adam: https://github.com/ShirazAdam/mssql-dev-v2022"
 
 
 #Step 1.1 define ev and args:
+RUN echo "Step 1.1 define ev and args"
 ARG CU="15" 
 ARG VERSION="16.0.4541.4"
 ARG TYPE="dev"
@@ -47,8 +46,8 @@ ENV attach_dbs="[]"
 ENV accept_eula="_"
 ENV sa_password_path="C:\ProgramData\Docker\secrets\sa-password"
 
-#Step 2: Create temporary directory to hold SQL Server installation files + CU
-RUN echo "Step 2: Create temporary directory to hold SQL Server installation files + CU"
+#Step 2.0: Create temporary directory to hold SQL Server installation files + CU
+RUN echo "Step 2.0: Create temporary directory to hold SQL Server installation files + CU"
 # RUN powershell -command ('C:')
 # RUN powershell -command ('CD\')
 RUN powershell -Command (MKDIR 'C:/Temp_SQLDev_Setup')
@@ -61,18 +60,18 @@ RUN powershell -Command (MKDIR 'C:/Temp_CU_Setup')
 RUN echo 'Step 2.1 because of error on CU install need to copy ahead missing files to GAC'
 COPY 'SQLSetupMedia/CU/CU15/Missing/' 'C:/Windows/Microsoft.Net/assembly/GAC_MSIL'
 
-#Step 3: Copy SQL Server XXXX installation files from the host to the container image
-RUN echo 'Step 3: Copy SQL Server XXXX installation files from the host to the container image'
+#Step 3.0: Copy SQL Server XXXX installation files from the host to the container image
+RUN echo 'Step 3.0: Copy SQL Server XXXX installation files from the host to the container image'
 COPY  'SQLSetupMedia/SQLServer2022-x64-ENU-Dev/'  'C:/Temp_SQLDev_Setup'
 
 #Step 3.1: Download CU15 installation file from the internet
 RUN powershell $path = 'SQLSetupMedia\CU\CU15\SQLServer2022-KB5041321-x64.exe'; \
     if (-not(Test-Path -path $path)) { \
-        Write-Host 'File does not exist. Now downloading CU$($CU).' \
+        echo 'File does not exist. Now downloading CU$($CU).' \
         Invoke-WebRequest -Uri 'https://download.microsoft.com/download/9/6/8/96819b0c-c8fb-4b44-91b5-c97015bbda9f/SQLServer2022-KB5041321-x64.exe' -OutFile $path \
     } \
     else { \
-        Write-Host 'File exists. There is no need to download CU$($CU) again.' \
+        echo 'File exists. There is no need to download CU$($CU) again.' \
     }
 
 #Step 3.2: Copy CU  XXXX installation .EXE file from the host to the container image to another folder
@@ -94,20 +93,20 @@ SHELL ["powershell", "-Command", "$ErrorActionPreference = 'Stop'; $ProgressPref
 USER ContainerAdministrator
 
 
-# #Step 3.5 get chocolatey to install 7zip and sqlpackage
-# RUN echo 'Step 3.5 get chocolatey to install 7zip and sqlpackage'
-# RUN $ProgressPreference = 'SilentlyContinue'; \
-#     Invoke-Expression ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1')); \
-#     choco feature enable -n allowGlobalConfirmation; \
-#     choco install --no-progress --limit-output 7zip sqlpackage; \
-#      # Setup and use the Chocolatey helpers
-#     Import-Module "${ENV:ChocolateyInstall}\helpers\chocolateyProfile.psm1"; \
-#     Update-SessionEnvironment;
-#     # Import-Module "$env:ChocolateyInstall\helpers\chocolateyProfile.psm1" - didn't worked for me here \
-#     # refreshenv;      - didn't worked for me here
+#Step 3.5 get chocolatey to install 7zip and sqlpackage
+RUN echo 'Step 3.5 get chocolatey to install 7zip and sqlpackage'
+RUN $ProgressPreference = 'SilentlyContinue'; \
+    Invoke-Expression ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1')); \
+    choco feature enable -n allowGlobalConfirmation; \
+    choco install --no-progress --limit-output 7zip sqlpackage; \
+     # Setup and use the Chocolatey helpers
+    Import-Module "${ENV:ChocolateyInstall}\helpers\chocolateyProfile.psm1"; \
+    Update-SessionEnvironment;
+    # Import-Module "$env:ChocolateyInstall\helpers\chocolateyProfile.psm1" - didn't worked for me here \
+    # refreshenv;      - didn't worked for me here
 
-#Step 4: Install SQL Server Developer SysPrep (Only Prepare Image with FULL UPDATES) via command line inside powershell
-RUN echo 'Step 4: Install SQL Server Developer SysPrep (Only Prepare Image with FULL UPDATES) via command line inside powershell'
+#Step 4.0: Install SQL Server Developer SysPrep (Only Prepare Image with FULL UPDATES) via command line inside powershell
+RUN echo 'Step 4.0: Install SQL Server Developer SysPrep (Only Prepare Image with FULL UPDATES) via command line inside powershell'
 RUN     .\Temp_SQLDev_Setup\SETUP.exe /q /ACTION=PrepareImage   \
         /INSTANCEID=MSSQLDEV  \
         /IACCEPTSQLSERVERLICENSETERMS /SUPPRESSPRIVACYSTATEMENTNOTICE /IACCEPTPYTHONLICENSETERMS \
@@ -130,8 +129,8 @@ RUN     .\Temp_SQLDev_Setup\SETUP.exe /q /ACTION=PrepareImage   \
         # /FEATURES=SQL,AS,IS \
         # /AGTSVCACCOUNT="NT AUTHORITY\System"  
     
-#Step 4.5 Install SQL Server Developer 'Complete Image' AFTER SysPrep Stage above via command line inside powershell
-RUN echo 'Step 4.5 Install SQL Server Developer ''Complete Image'' AFTER SysPrep Stage via command line inside powershell'
+#Step 4.1 Install SQL Server Developer 'Complete Image' AFTER SysPrep Stage above via command line inside powershell
+RUN echo 'Step 4.1 Install SQL Server Developer ''Complete Image'' AFTER SysPrep Stage via command line inside powershell'
 RUN mkdir 'C:/databases';
 
 RUN     .\Temp_SQLDev_Setup\SETUP.exe /q /ACTION=CompleteImage /INSTANCEID=MSSQLDEV \
@@ -158,13 +157,9 @@ RUN     .\Temp_SQLDev_Setup\SETUP.exe /q /ACTION=CompleteImage /INSTANCEID=MSSQL
         # /FEATURES=SQL,AS,IS \
         # /AGTSVCACCOUNT="NT AUTHORITY\System"  
 
-# RUN $SqlServiceName = 'MSSQLSERVER'; `  // if working with developer version - but we WON'T!
-#     if ($env:TYPE -eq 'exp') { `
-#         $SqlServiceName = 'MSSQL$SQLEXPRESS'; `
-#     } `
 #Step 5 - Finished  Basic setup, now configure SERVICES and Registry Values
 RUN echo 'Step 5: Finished  Basic setup, now configure SERVICES and Registry Values'
-RUN  $SqlServiceName = 'MSSQLSERVER'; \
+RUN  $SqlServiceName = 'MSSQL$MSSQLDEV'; \
     $VerbosePreference = 'continue'; \
     $WarningPreference = 'continue'; \
     $DebugPreference = 'continue'; \
