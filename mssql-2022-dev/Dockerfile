@@ -48,8 +48,6 @@ ENV sa_password_path="C:\ProgramData\Docker\secrets\sa-password"
 
 #Step 2.0: Create temporary directory to hold SQL Server installation files + CU
 RUN echo "Step 2.0: Create temporary directory to hold SQL Server installation files + CU"
-# RUN powershell -command ('C:')
-# RUN powershell -command ('CD\')
 RUN powershell -Command (MKDIR 'C:/Temp_SQLDev_Setup')
 RUN powershell -Command (MKDIR 'C:/Temp_CU_Setup')
 
@@ -83,26 +81,12 @@ COPY 'SQLSetupMedia/CU/CU15/SQLServer2022-KB5041321-x64.exe' 'C:/Temp_CU_Setup'
 RUN echo 'Step 3.3 check size of setup media directory in container -should be  652431336 (622M)'
 WORKDIR  'C:/Temp_SQLDev_Setup'
 RUN powershell -Command "(ls -r | measure -sum Length)"
-# RUN powershell -Command "(Get-ChildItem -Recurse | Measure-Object -Sum Length)"
-#back to origin
 WORKDIR '/'
 
 #Step 3.4 setup PowerShell for  error messages and user
 RUN echo 'Step 3.4 setup PowerShell for error messages and user'
 SHELL ["powershell", "-Command", "$ErrorActionPreference = 'Stop'; $ProgressPreference = 'SilentlyContinue';"]
 USER ContainerAdministrator
-
-# #Step 3.5 get chocolatey to install 7zip and sqlpackage
-# RUN echo 'Step 3.5 get chocolatey to install 7zip and sqlpackage'
-# RUN $ProgressPreference = 'SilentlyContinue'; \
-#     Invoke-Expression ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1')); \
-#     choco feature enable -n allowGlobalConfirmation; \
-#     choco install --no-progress --limit-output 7zip sqlpackage; \
-#      # Setup and use the Chocolatey helpers
-#     Import-Module "${ENV:ChocolateyInstall}\helpers\chocolateyProfile.psm1"; \
-#     Update-SessionEnvironment;
-#     # Import-Module "$env:ChocolateyInstall\helpers\chocolateyProfile.psm1" - didn't worked for me here \
-#     # refreshenv;      - didn't worked for me here
 
 
 #Step 4.0: Install SQL Server Developer SysPrep (Only Prepare Image with FULL UPDATES) via command line inside powershell
@@ -112,22 +96,8 @@ RUN     .\Temp_SQLDev_Setup\SETUP.exe /q /ACTION=PrepareImage   \
         /IACCEPTSQLSERVERLICENSETERMS /SUPPRESSPRIVACYSTATEMENTNOTICE /IACCEPTPYTHONLICENSETERMS \
         /IACCEPTROPENLICENSETERMS  \
         /INDICATEPROGRESS \
-        # /SECURITYMODE=SQL /SQLSVCACCOUNT="NT AUTHORITY\NETWORK SERVICE" \
-        #   /SQLSVCACCOUNT='NT AUTHORITY\NETWORK SERVICE' \
-        # /SECURITYMODE=SQL /SAPWD=$sa_password /SQLSVCACCOUNT="NT AUTHORITY\NETWORK SERVICE" \
-        # /SQLSYSADMINACCOUNTS='BUILTIN\ADMINISTRATORS'  \
-        #  /UPDATEENABLED=True /UpdateSource='C:\Temp_CU_Setup\SQLServer2022-KB5041321-x64.exe' \
          /UPDATEENABLED=True /UpdateSource='C:/Temp_CU_Setup' \
-        # /FEATURES=SQLEngine; \
-        #  SQL= Installs the SQL Server Database Engine, Replication, Fulltext, and Data Quality Server.
-        #  SQLEngine= Installs Only the SQL Server Database Engine.
         /FEATURES=SQL;
-        #test without delete - remove if nessacery: \
-        # remove-item -recurse -force c:\Temp_SQLDev_Setup -ErrorAction SilentlyContinue; \
-        # Few tests here:
-        # or:
-        # /FEATURES=SQL,AS,IS \
-        # /AGTSVCACCOUNT="NT AUTHORITY\System"  
     
 #Step 4.1 Install SQL Server Developer 'Complete Image' AFTER SysPrep Stage above via command line inside powershell
 RUN echo 'Step 4.1 Install SQL Server Developer ''Complete Image'' AFTER SysPrep Stage via command line inside powershell'
@@ -138,24 +108,13 @@ RUN .\Temp_SQLDev_Setup\SETUP.exe /q /ACTION=CompleteImage /INSTANCEID=MSSQLDEV 
     /IACCEPTROPENLICENSETERMS  \
     /INDICATEPROGRESS \
     /INSTANCENAME=MSSQLDEV  /INSTANCEID=MSSQLDEV \
-    # /SECURITYMODE=SQL /SQLSVCACCOUNT="NT AUTHORITY\NETWORK SERVICE" \
-    # The password here we are inserting is NOT IMPORTANT because we change it at docker run (container) \
-    # so you can enter here anything but must be SOMETHING, otherwise it won't work. \
     /SECURITYMODE=SQL /SAPWD='blaBlaBlaPass1!' /SQLSVCACCOUNT='NT AUTHORITY\NETWORK SERVICE' \
-    # /SECURITYMODE=SQL /SAPWD=$sa_password /SQLSVCACCOUNT="NT AUTHORITY\NETWORK SERVICE" \
     /AGTSVCACCOUNT='NT AUTHORITY\NETWORK SERVICE' \
     /SQLSYSADMINACCOUNTS='BUILTIN\ADMINISTRATORS' \
     /TCPENABLED=1 /NPENABLED=1    \
-    # /FEATURES=SQLEngine \
-    # /FEATURES=SQL; \
     /SQLUSERDBDIR='C:/databases' /SQLUSERDBLOGDIR='C:/databases'; \ 
-    #test without delete - remove if nessacery:
-    #clean up install media file to reduce container size
     remove-item -recurse -force c:\Temp_SQLDev_Setup -ErrorAction SilentlyContinue; \
     remove-item -recurse -force c:\Temp_CU_Setup -ErrorAction SilentlyContinue;
-    # or:
-    # /FEATURES=SQL,AS,IS \
-    # /AGTSVCACCOUNT="NT AUTHORITY\System"  
 
 
 #Step 5 - Finished  Basic setup, now configure SERVICES and Registry Values
@@ -171,8 +130,6 @@ RUN $SqlServiceName = 'MSSQL$MSSQLDEV'; \
     While (!(get-service $SqlServiceName -ErrorAction Continue)) { Start-Sleep -Seconds 5 } ; \
     Stop-Service $SqlServiceName ; \
     $databaseFolder = 'c:/databases'; \
-    # mkdir > $null don't throw exception when dir already exist
-    # this command creates directory and not return exception if already exist as we create it above
     New-Item -Path  $databaseFolder -ItemType Directory -Force; \
     $SqlWriterServiceName = 'SQLWriter'; \
     $SqlBrowserServiceName = 'SQLBrowser'; \
@@ -182,27 +139,10 @@ RUN $SqlServiceName = 'MSSQL$MSSQLDEV'; \
     Set-Service $SqlBrowserServiceName -startuptype manual ; \
     Stop-Service $SqlBrowserServiceName; \
     $SqlTelemetryName = 'SQLTELEMETRY$MSSQLDEV'; \
-    # if ($env:TYPE -eq 'exp') { \
-    #     $SqlTelemetryName = 'SQLTELEMETRY$SQLEXPRESS'; \
-    # } \
     Set-Service $SqlTelemetryName -startuptype manual ; \
     Stop-Service $SqlTelemetryName; \
     $version = [System.Version]::Parse($env:VERSION); \
     $id = ('mssql' + $version.Major + '.MSSQLSERVER'); \
-    # if ($env:TYPE -eq 'exp') { \
-    #     $id = ('mssql' + $version.Major + '.SQLEXPRESS'); \
-    # } \
-    # [microsoft.win32.registry]::SetValue('HKLM:\software\microsoft\microsoft sql server\' + $id + '\mssqlserver\supersocketnetlib\tcp\ipall', 'SQLServer2022', 'Developer Edition'); \
-    # New-item -path ('HKLM:\software\microsoft\microsoft sql server\' + $id + '\mssqlserver\supersocketnetlib\tcp\ipall') | New-ItemProperty -Name 'SQLServer2022' -Value 'Developer Edition'; \
-    # Set-Location -Path ('HKLM:\software\microsoft\microsoft sql server\' + $id + '\mssqlserver\supersocketnetlib\tcp\ipall'); \
-    # $newItemPropertySplat = @{ \
-    #     Path = 'HKLM:\software\microsoft\microsoft sql server\' + $id + '\mssqlserver\supersocketnetlib\tcp\ipall' \
-    #     Name = 'PowerShellPath' \
-    #     PropertyType = 'String' \
-    #     Value = $PSHome \
-    # }; \
-    # New-ItemProperty @newItemPropertySplat; \
-    # While ($true) { echo 'HKLM:\software\microsoft\microsoft sql server\' + $id + '\mssqlserver\supersocketnetlib\tcp\ipall'; Start-Sleep -Seconds 5; }; \
     New-Item -path ('HKLM:\SOFTWARE\Microsoft\Microsoft SQL Server\' + $id + '\'); \
     New-Item -path ('HKLM:\SOFTWARE\Microsoft\Microsoft SQL Server\' + $id + '\MSSQLServer\'); \
     New-Item -path ('HKLM:\SOFTWARE\Microsoft\Microsoft SQL Server\' + $id + '\MSSQLServer\SuperSocketNetLib\'); \
@@ -233,6 +173,4 @@ COPY start.ps1 C:/Temp_Scripts
 # BUT ACTUALLY we don't inserting these values here , but in Docker-compose.yaml file ore in docker run command
 RUN echo 'Step 8: Run PowerShell script Start.ps1, passing inside the script  the -ACCEPT_EULA parameter with \
  a value of Y etc'
-CMD .\start.ps1  
-
-
+CMD .\start.ps1
