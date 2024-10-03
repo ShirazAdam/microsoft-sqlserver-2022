@@ -7,8 +7,6 @@ services:
       - 1434:1433
     volumes:
       - D:\databases\developer:C:\databases
-    # networks:
-    #   - microsoft-sqlserver-2022_default
   express-edition:
     build: .\express-edition
     command: -t mssqlserver-2022-express-cu15-windows:v1.0 --build-arg VERSION=16.00.1000.06
@@ -17,10 +15,3 @@ services:
       - 1435:1433
     volumes:
       - D:\databases\express:C:\databases
-#     networks:
-#       - microsoft-sqlserver-2022_default
-
-# networks:
-#   microsoft-sqlserver-2022_default:
-#     driver: bridge
-#     external: false
