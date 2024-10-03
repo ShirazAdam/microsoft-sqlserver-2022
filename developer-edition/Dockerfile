@@ -28,7 +28,7 @@
 #Step 1.0: Start from base image mcr.microsoft.com/windows/servercore
 FROM mcr.microsoft.com/windows/servercore:ltsc2022
 RUN echo "Step 1.0: Start from base image mcr.microsoft.com/windows/servercore"
-LABEL maintainer "Shiraz Adam: https://github.com/ShirazAdam/mssql-dev-v2022"
+LABEL maintainer "Shiraz Adam: https://codeberg.org/ShirazAdam/microsoft-sqlserver-2022"
 
 
 #Step 1.1 define ev and args:
