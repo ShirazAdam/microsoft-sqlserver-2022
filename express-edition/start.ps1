@@ -100,5 +100,4 @@ while ($true)
     Get-EventLog -LogName Application -Source "MSSQL*" -After $lastCheck | Select-Object TimeGenerated, EntryType, Message	 
     $lastCheck = Get-Date 
     Start-Sleep -Seconds 2 
-    Write-Host $lastCheck
 }
