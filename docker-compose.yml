@@ -1,17 +1,17 @@
 services:
   developer-edition:
     build: .\developer-edition
-    command: -t mssqlserver-2022-developer-cu15-windows:v1.0 --build-arg VERSION=16.00.1000.06
+    # command: -t mssqlserver-2022-developer-cu15-windows:v1.0 --build-arg VERSION=16.00.1000.06
     restart: always
     ports:
-      - 1434:1433
+      - 3341:1433
     volumes:
       - D:\databases\developer:C:\databases
   express-edition:
     build: .\express-edition
-    command: -t mssqlserver-2022-express-cu15-windows:v1.0 --build-arg VERSION=16.00.1000.06
+    # command: -t mssqlserver-2022-express-cu15-windows:v1.0 --build-arg VERSION=16.00.1000.06
     restart: always
     ports:
-      - 1435:1433
+      - 3342:1433
     volumes:
       - D:\databases\express:C:\databases

@@ -2,6 +2,27 @@
 #Created by Shiraz Adam
 #Based on the work of for Isaac Kramer (tzahik1@gmail.com) SQL SERVER Express 2022 WINDOWS on server core 2022 + CU11
 #Based on the work of Tobias Fenster  https://github.com/tfenster/mssql-image/
+#But with a twist of using 2 stages of SQL Server Install - 1. SysPrep (with FULL updates of CU) 2.CreatImage
+# (normal CU update after server installed didn't work for me when deploying it as a container)
+# This version was for SQL Express but I believe the it will also work for Developer/Enterprise versions
+#
+# You need 3 set-up folders on the host to be ready for the build as seen in the Dockerfile:
+
+# 1. The main SQL Server 2022 developer setup media extracted so that the root SETUP.EXE will be in '\SQLSetupMedia\SQLServer2022-x64-ENU-Dev\' folder.
+# 2. The CU update (in this case CU15) EXE file (don't need to be extacted) in '\SQLSetupMedia\CU\CU15\SQLServer2022-KB5041321-x64.exe'
+# 3. Due to strange bug that the servercore 2022 image don't have old server controls (used to be at 1809) you must 
+#     have The Missing Server control files/folders - which is a bunch of folders which include old control dll's under 'Missing' folder.
+#     as explaind in here:  https://github.com/microsoft/mssql-docker/issues/540.
+#    So 4 folders needs to be in the folder '\SQLSetupMedia\CU\CU15\Missing\' to fix this strange bug i mentioned there.
+# you can get them from an old sql server installation from the GAC folder.
+# For convenience for the public i  uploaded  a zip file with all the folders to just drop it there.
+# zip file: OldServerControlsFolders.zip
+
+# How to use after build:
+# docker build `
+# --build-arg VERSION=16.0.4541.4 --build-arg TYPE=dev `
+# -f Dockerfile.prep.txt ` (or without this line for fileName regular Dockerfile...)
+# -t mssqlserver-2022-dev:2022-win-CU15-v1.0.
 
 
 #Step 1.0: Start from base image mcr.microsoft.com/windows/servercore
@@ -36,8 +57,8 @@ RUN echo 'Step 2.1 because of error on CU install need to copy ahead missing fil
 COPY 'SQLSetupMedia/CU/CU15/Missing/' 'C:/Windows/Microsoft.Net/assembly/GAC_MSIL'
 
 
-#Step 3.0: Copy SQL Server XXXX installation files from the host to the container image
-RUN echo 'Step 3.0: Copy SQL Server XXXX installation files from the host to the container image'
+#Step 3.0: Copy SQL Server Express installation files from the host to the container image
+RUN echo 'Step 3.0: Copy SQL Server Express installation files from the host to the container image'
 COPY  'SQLSetupMedia/ExpressAdv_ENU/'  'C:/Temp_SQLDev_Setup'
 
 #Step 3.1: Download CU15 installation file from the internet
@@ -50,8 +71,8 @@ RUN powershell $path = 'SQLSetupMedia\CU\CU15\SQLServer2022-KB5041321-x64.exe'; 
         echo 'File exists. There is no need to download CU$($CU) again.' \
     }
 
-#Step 3.2: Copy CU  XXXX installation .EXE file from the host to the container image to another folder
-RUN echo 'Step 3.2: Copy CU  XXXX installation .EXE file from the host to the container image'
+#Step 3.2: Copy CU15 installation .EXE file from the host to the container image to another folder
+RUN echo 'Step 3.2: Copy CU15 installation .EXE file from the host to the container image'
 COPY 'SQLSetupMedia/CU/CU15/SQLServer2022-KB5041321-x64.exe' 'C:/Temp_CU_Setup'
 
 #Step 3.3 check size of setup media directory in container -should be  652431336 (622M)
