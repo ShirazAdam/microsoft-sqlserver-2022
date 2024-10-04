@@ -141,11 +141,11 @@ RUN $SqlServiceName = 'MSSQL$SQLEXPRESS'; \
     Stop-Service $SqlTelemetryName; \
     $version = [System.Version]::Parse($env:VERSION); \
     $id = ('mssql' + $version.Major + '.MSSQLSERVER'); \
-    # New-Item -path ('HKLM:\SOFTWARE\Microsoft\Microsoft SQL Server\' + $id + '\'); \
-    # New-Item -path ('HKLM:\SOFTWARE\Microsoft\Microsoft SQL Server\' + $id + '\MSSQLServer\'); \
-    # New-Item -path ('HKLM:\SOFTWARE\Microsoft\Microsoft SQL Server\' + $id + '\MSSQLServer\SuperSocketNetLib\'); \
-    # New-Item -path ('HKLM:\SOFTWARE\Microsoft\Microsoft SQL Server\' + $id + '\MSSQLServer\SuperSocketNetLib\Tcp\'); \
-    # New-Item -path ('HKLM:\SOFTWARE\Microsoft\Microsoft SQL Server\' + $id + '\MSSQLServer\SuperSocketNetLib\Tcp\IPAll'); \
+    New-Item -path ('HKLM:\SOFTWARE\Microsoft\Microsoft SQL Server\' + $id + '\'); \
+    New-Item -path ('HKLM:\SOFTWARE\Microsoft\Microsoft SQL Server\' + $id + '\MSSQLServer\'); \
+    New-Item -path ('HKLM:\SOFTWARE\Microsoft\Microsoft SQL Server\' + $id + '\MSSQLServer\SuperSocketNetLib\'); \
+    New-Item -path ('HKLM:\SOFTWARE\Microsoft\Microsoft SQL Server\' + $id + '\MSSQLServer\SuperSocketNetLib\Tcp\'); \
+    New-Item -path ('HKLM:\SOFTWARE\Microsoft\Microsoft SQL Server\' + $id + '\MSSQLServer\SuperSocketNetLib\Tcp\IPAll'); \
     New-Item -path ('HKLM:\software\microsoft\microsoft sql server\' + $id + '\mssqlserver\supersocketnetlib\tcp\ipall') -name tcpdynamicports -value '' ; \
     New-Item -path ('HKLM:\software\microsoft\microsoft sql server\' + $id + '\mssqlserver\supersocketnetlib\tcp\ipall') -name tcpport -value 1433 ; \
     New-Item -path ('HKLM:\software\microsoft\microsoft sql server\' + $id + '\mssqlserver') -name LoginMode -value 2; 
