@@ -34,11 +34,8 @@ else
 
 # start the service
 Write-Host "Starting SQL Server"
-$SqlServiceName = 'MSSQLSERVER'; 
-if (-not [string]::isNullOrEmpty($env:EXP_EXE)) { 
-    $SqlServiceName = 'MSSQL$SQLEXPRESS'; 
-} 
-start-service $SqlServiceName
+$SqlServiceName = 'MSSQL$MSSQLDEV';
+start-service "'${$SqlServiceName}'"
 
 if($sa_password -eq "_") {
     if (Test-Path $env:sa_password_path) {
@@ -52,7 +49,9 @@ if($sa_password -eq "_") {
 if($sa_password -ne "_")
 {
     Write-Host "Changing SA login credentials"
-    $sqlcmd = "ALTER LOGIN sa with password=" +"'" + $sa_password + "'" + ";ALTER LOGIN sa ENABLE;"
+    # $sqlcmd = "ALTER LOGIN sa with password=" +"'" + $sa_password + "'" + ";ALTER LOGIN sa ENABLE;"
+    # & sqlcmd -Q $sqlcmd
+    $sqlcmd = "sqlcmd -U 'sa' -P 'blaBlaBlaPass1!' -Z ${$sa_password}" #change pw, and exit due to capital ZED (Z)
     & sqlcmd -Q $sqlcmd
 }
 
