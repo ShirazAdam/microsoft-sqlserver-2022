@@ -2,7 +2,7 @@
 An **unofficial**, **unsupported** and **in no way connected to Microsoft** container image for MS SQL Server Developer and Express Editions.
 
 This project is available from the following SCMs:
-* Azure DevOps (Private) - N/A
+* Azure DevOps (Master/Private) - N/A
 * CodeBerg (Primary) - https://codeberg.org/ShirazAdam/microsoft-sqlserver-2022
 * GitLab (Secondary) - https://gitlab.com/ShirazAdam/microsoft-sqlserver-2022
 * GitHub (Tertiary) - https://github.com/ShirazAdam/microsoft-sqlserver-2022
