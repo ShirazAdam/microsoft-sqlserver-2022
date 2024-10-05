@@ -35,7 +35,7 @@ else
 # start the service
 Write-Host "Starting SQL Server"
 $SqlServiceName = 'MSSQL$SQLEXPRESS';
-start-service $SqlServiceName
+start-service "'${$SqlServiceName}'"
 
 if($sa_password -eq "_") {
     if (Test-Path $env:sa_password_path) {
@@ -49,7 +49,9 @@ if($sa_password -eq "_") {
 if($sa_password -ne "_")
 {
     Write-Host "Changing SA login credentials"
-    $sqlcmd = "ALTER LOGIN sa with password=" +"'" + $sa_password + "'" + ";ALTER LOGIN sa ENABLE;"
+    # $sqlcmd = "ALTER LOGIN sa with password=" +"'" + $sa_password + "'" + ";ALTER LOGIN sa ENABLE;"
+    # & sqlcmd -Q $sqlcmd
+    $sqlcmd = "sqlcmd -U 'sa' -P 'blaBlaBlaPass1!' -Z ${$sa_password}" #change pw, and exit due to capital ZED (Z)
     & sqlcmd -Q $sqlcmd
 }
 
@@ -100,5 +102,4 @@ while ($true)
     Get-EventLog -LogName Application -Source "MSSQL*" -After $lastCheck | Select-Object TimeGenerated, EntryType, Message	 
     $lastCheck = Get-Date 
     Start-Sleep -Seconds 2 
-    Write-Host $lastCheck
 }
