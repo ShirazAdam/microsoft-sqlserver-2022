@@ -20,10 +20,10 @@ The steps for this build as follows:
 4. Switch to Windows containers from the docker desktop options.
 5. From Windows PowerShell run 'docker-compose up'.
 6. Connect to Microsoft SQL Server 2022 Developer or Express Edition using Microsoft SQL Server Management Studio (https://learn.microsoft.com/en-gb/sql/ssms/download-sql-server-management-studio-ssms) with the following details:
-    server name for Developer Edition 'localhost,3341'
-    server name for Express Edition 'localhost,3342'
-    username as 'sa'
-    password as 'blaBlaBlaPass1!'
+    * server name for Developer Edition 'localhost,3341'
+    * server name for Express Edition 'localhost,3342'
+    * username as 'sa'
+    * password as 'blaBlaBlaPass1!'
 
 Unofficial Microsoft SQL Server 2022 Developer Edition for Windows container build 16.0.4145.4 with CU15. This should also work for other editions of SQL Server but I have not tested the other versions.
 
