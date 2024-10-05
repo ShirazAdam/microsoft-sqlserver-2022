@@ -19,11 +19,18 @@ The steps for this build as follows:
 3. Ensure Hyper-V and Windows Containers are enabled through Windows Feature.
 4. Switch to Windows containers from the docker desktop options.
 5. From Windows PowerShell run 'docker-compose up'.
+6. Connect to Microsoft SQL Server 2022 Developer or Express Edition using the following details:
+    server name for Developer Edition 'localhost,3341'
+    server name for Express Edition 'localhost,3342'
+    username as 'sa'
+    password as 'blaBlaBlaPass1!'
 
 Unofficial Microsoft SQL Server 2022 Developer Edition for Windows container build 16.0.4145.4 with CU15. This should also work for other editions of SQL Server but I have not tested the other versions.
 
 Use 'docker-compose up' for the standard containerisation process of Microsoft SQL Server 2022 Developer Edition and CU15 following the instructions above.
 Use 'Package-SQL-CU-tar.ps1' to create a tar with the CU15 files only. original source taken from https://gist.github.com/jermicus/a117c6727894407161ba9ac72fd02bce. 
+
+
 
 # Update 02.07.2024:
 This version was updated by me, Isaac Kramer based on the work of Tobias.
