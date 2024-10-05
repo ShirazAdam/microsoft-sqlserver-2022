@@ -1,6 +1,12 @@
 # MS SQL Server 2022 Developer and Express Docker container images + CU15 Build version 16.0.4145.4
 An **unofficial**, **unsupported** and **in no way connected to Microsoft** container image for MS SQL Server Developer and Express Editions.
 
+This project is available from the following SCMs:
+* Azure DevOps (Private) - N/A
+* CodeBerg (Primary) - https://codeberg.org/ShirazAdam/microsoft-sqlserver-2022
+* GitLab (Secondary) - https://gitlab.com/ShirazAdam/microsoft-sqlserver-2022
+* GitHub (Tertiary) - https://github.com/ShirazAdam/microsoft-sqlserver-2022
+
 # Update 15/10/2024:
 This version was updated and modified to support Microsoft SQL Server 2022 Express Edition (https://download.microsoft.com/download/5/1/4/5145fe04-4d30-4b85-b0d1-39533663a2f1/SQL2022-SSEI-Expr.exe).
 This version will update the container to Cumulative Update 15 (CU15) build version 16.0.4145.4 (https://download.microsoft.com/download/9/6/8/96819b0c-c8fb-4b44-91b5-c97015bbda9f/SQLServer2022-KB5041321-x64.exe)
