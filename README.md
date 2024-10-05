@@ -19,7 +19,7 @@ The steps for this build as follows:
 3. Ensure Hyper-V and Windows Containers are enabled through Windows Feature.
 4. Switch to Windows containers from the docker desktop options.
 5. From Windows PowerShell run 'docker-compose up'.
-6. Connect to Microsoft SQL Server 2022 Developer or Express Edition using the following details:
+6. Connect to Microsoft SQL Server 2022 Developer or Express Edition using Microsoft SQL Server Management Studio (https://learn.microsoft.com/en-gb/sql/ssms/download-sql-server-management-studio-ssms) with the following details:
     server name for Developer Edition 'localhost,3341'
     server name for Express Edition 'localhost,3342'
     username as 'sa'
