@@ -40,7 +40,7 @@ ENV CU=$CU
 ENV VERSION=${VERSION}
 ENV sa_password="Vmw0NTY3dmxzaTI1MDAh"
 ENV attach_dbs="[]" 
-ENV accept_eula="_"
+ENV accept_eula="Y"
 ENV sa_password_path="C:\ProgramData\Docker\secrets\sa-password"
 
 
