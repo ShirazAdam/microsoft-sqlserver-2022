@@ -35,7 +35,7 @@ else
 # start the service
 Write-Host "Starting SQL Server"
 $SqlServiceName = 'MSSQL$MSSQLDEV';
-start-service "'${$SqlServiceName}'"
+start-service $SqlServiceName
 
 if($sa_password -eq "_") {
     if (Test-Path $env:sa_password_path) {

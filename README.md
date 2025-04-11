@@ -5,9 +5,9 @@ An **unofficial**, **unsupported** and **in no way connected to Microsoft** cont
 
 This project is available from the following SCMs:
 * Azure DevOps (Master/Private) - N/A
-* CodeBerg (Primary) - https://codeberg.org/ShirazAdam/microsoft-sqlserver-2022
-* GitLab (Secondary) - https://gitlab.com/ShirazAdam/microsoft-sqlserver-2022
-* GitHub (Tertiary) - https://github.com/ShirazAdam/microsoft-sqlserver-2022
+* CodeBerg (Primary/Public) - https://codeberg.org/ShirazAdam/microsoft-sqlserver-2022
+* GitLab (Secondary/Public) - https://gitlab.com/ShirazAdam/microsoft-sqlserver-2022
+* GitHub (Tertiary/Public) - https://github.com/ShirazAdam/microsoft-sqlserver-2022
 
 # Update 15/10/2024:
 This version was updated and modified to support Microsoft SQL Server 2022 Express Edition (https://download.microsoft.com/download/5/1/4/5145fe04-4d30-4b85-b0d1-39533663a2f1/SQL2022-SSEI-Expr.exe).
@@ -28,13 +28,14 @@ The steps for this build as follows:
 5. Switch to Windows containers from the docker desktop options.
 6. From Windows PowerShell run 'docker-compose up'.
 7. Connect to Microsoft SQL Server 2022 Developer or Express Edition using Microsoft SQL Server Management Studio (https://learn.microsoft.com/en-gb/sql/ssms/download-sql-server-management-studio-ssms) with the following details:
-    * server name for Developer Edition 'localhost,3341'
-    * server name for Express Edition 'localhost,3342'
-    * username as 'sa'
-    * password as 'blaBlaBlaPass1!'
+    * server name for Developer Edition 'localhost,3341' or set the port mapping to 1433 to use 'localhost'.
+    * server name for Express Edition 'localhost,3342' or set the port mapping to 1433 to use 'localhost'.
+    * Please note that the port must be different for localhost if you have a local instance of SQL Server running or running multiple versions/editions.
+    * username as 'sa'.
+    * password as 'blaBlaBlaPass1!'.
 8. Databases created will be stored locally using volumes:
-    * For Developer edition: 'D:\databases\developer\'
-    * For Express edition: 'D:\databases\express\'
+    * For Developer edition: 'D:\databases\developer\'.
+    * For Express edition: 'D:\databases\express\'.
 
 Unofficial Microsoft SQL Server 2022 Developer Edition for Windows container build 16.0.4145.4 with CU15. This should also work for other editions of SQL Server but I have not tested the other versions.
 

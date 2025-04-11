@@ -8,6 +8,7 @@ services:
       # - 3341:1433
     volumes:
       - D:\databases\developer:C:\databases
+    image: microsoft-sqlserver-2022-developer-edition:2022-CU15-v1.1.2
   express-edition:
     build: .\express-edition
     # command: -t mssqlserver-2022-express-cu15-windows:v1.0 --build-arg VERSION=16.00.1000.06
@@ -17,3 +18,4 @@ services:
       # - 3342:1433
     volumes:
       - D:\databases\express:C:\databases
+    image: microsoft-sqlserver-2022-express-edition:2022-CU15-v1.1.2
